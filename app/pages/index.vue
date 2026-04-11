@@ -6,7 +6,7 @@ const activeView = useState<'calculator' | 'consolidation'>('loan-ui/active-view
 
 <template>
   <main class="min-h-screen bg-background px-4 py-16 selection:bg-primary/20">
-    <div class="mx-auto flex w-full max-w-4xl flex-col gap-10">
+    <div class="mx-auto flex w-full max-w-7xl flex-col gap-10">
       <header class="flex flex-col items-center justify-center space-y-4 text-center">
         <div class="inline-flex items-center rounded-full border border-primary/20 bg-primary/5 px-3 py-1 text-xs font-medium text-primary shadow-sm backdrop-blur-md">
           <span class="mr-2 flex h-2 w-2 rounded-full bg-primary shadow-[0_0_8px_rgba(14,165,233,0.8)]"></span>

@@ -192,250 +192,265 @@ onMounted(() => {
 </script>
 
 <template>
-  <Card class="border-0 shadow-soft bg-white/80 backdrop-blur-2xl ring-1 ring-border/40 overflow-hidden rounded-3xl">
-    <CardHeader class="border-b border-border/30 bg-muted/30 pb-8 pt-8">
-      <CardTitle class="text-2xl font-extrabold text-foreground tracking-tight">Loan Calculator</CardTitle>
-      <CardDescription class="text-muted-foreground text-base mt-2">
-        Enter principal, annual interest rate, and term to compute payment details and amortization.
-      </CardDescription>
-    </CardHeader>
-    <CardContent class="space-y-10 pt-8 px-6 sm:px-10">
-      <form class="grid gap-8 sm:grid-cols-2 xl:grid-cols-3" @submit.prevent="form.handleSubmit">
-        <form.Field
-          name="principal"
-          :validators="{
-            onBlur: ({ value }) => validateNumber(principalRule, value)
-          }"
-        >
-          <template #default="{ field }">
-            <div class="space-y-2">
-              <label class="mb-1 block text-sm font-semibold tracking-wide text-foreground/80" :for="field.name">Principal ($)</label>
-              <Input
-                :id="field.name"
-                class="rounded-xl border-border/60 bg-white/60 px-4 py-6 text-lg transition-all focus:ring-2 focus:ring-primary/40 focus:border-primary shadow-sm"
-                type="number"
-                :min="1"
-                step="0.01"
-                :model-value="field.state.value"
-                @input="onNumberInput(field, $event)"
-                @blur="field.handleBlur"
-              />
-              <p
-                class="min-h-5 text-xs font-medium text-red-500"
-                :class="{ invisible: !(field.state.meta.isTouched && displayError(field.state.meta.errors)) }"
-              >
-                {{ displayError(field.state.meta.errors) || '-' }}
-              </p>
-            </div>
-          </template>
-        </form.Field>
+  <div class="space-y-8 h-full">
+    <!-- Top Row: 40/60 Split -->
+    <div class="grid grid-cols-1 lg:grid-cols-[2fr_3fr] gap-6 xl:gap-8 items-start">
+      
+      <!-- LEFT: Calculator Form (40%) -->
+      <Card class="bg-white rounded-[2rem] shadow-sm border border-border/30 overflow-hidden">
+        <CardHeader class="border-b border-border/20 bg-slate-50 pb-6 pt-6 px-6 sm:px-8">
+          <CardTitle class="text-xl font-extrabold text-[#1e1b4b] tracking-tight">Loan Calculator</CardTitle>
+          <CardDescription class="text-muted-foreground text-sm mt-1">
+            Configure parameters to compute payment details and amortization.
+          </CardDescription>
+        </CardHeader>
+        <CardContent class="p-6 sm:p-8">
+          <form class="space-y-8" @submit.prevent="form.handleSubmit">
+            <form.Field
+              name="principal"
+              :validators="{ onBlur: ({ value }) => validateNumber(principalRule, value) }"
+            >
+              <template #default="{ field }">
+                <div class="space-y-4">
+                  <label class="block text-sm font-bold tracking-wide text-[#1e1b4b]" :for="field.name">Principal & Interest ($)</label>
+                  <input
+                    type="range"
+                    min="1000"
+                    max="1000000"
+                    step="5000"
+                    :value="field.state.value"
+                    class="w-full cursor-pointer accent-primary"
+                    @input="onNumberInput(field, $event)"
+                    @blur="field.handleBlur"
+                  />
+                  <div class="relative">
+                    <span class="absolute left-4 top-1/2 -translate-y-1/2 font-extrabold text-muted-foreground">$</span>
+                    <Input
+                      :id="field.name"
+                      class="rounded-xl border-border/40 bg-[#f8fafc] pl-8 py-5 text-lg transition-all focus:ring-2 focus:ring-primary/40 focus:border-primary shadow-inner"
+                      type="number"
+                      :min="1"
+                      step="0.01"
+                      :model-value="field.state.value"
+                      @input="onNumberInput(field, $event)"
+                      @blur="field.handleBlur"
+                    />
+                  </div>
+                  <p class="min-h-4 text-xs font-medium text-red-500" :class="{ invisible: !(field.state.meta.isTouched && displayError(field.state.meta.errors)) }">
+                    {{ displayError(field.state.meta.errors) || '-' }}
+                  </p>
+                </div>
+              </template>
+            </form.Field>
 
-        <form.Field
-          name="interestRate"
-          :validators="{
-            onBlur: ({ value }) => validateNumber(interestRateRule, value)
-          }"
-        >
-          <template #default="{ field }">
-            <div class="space-y-2">
-              <div class="flex items-center justify-between mb-1">
-                <label class="block text-sm font-semibold tracking-wide text-foreground/80" :for="field.name">Interest Rate</label>
-                <span class="rounded-full bg-primary/10 px-3 py-0.5 text-sm font-bold text-primary">{{ field.state.value.toFixed(2) }}%</span>
+            <form.Field
+              name="interestRate"
+              :validators="{ onBlur: ({ value }) => validateNumber(interestRateRule, value) }"
+            >
+              <template #default="{ field }">
+                <div class="space-y-4">
+                  <div class="flex items-center justify-between">
+                    <label class="block text-sm font-bold tracking-wide text-[#1e1b4b]" :for="field.name">Mortgage Interest Rate</label>
+                  </div>
+                  <input
+                    type="range"
+                    min="0"
+                    max="15"
+                    step="0.1"
+                    :value="field.state.value"
+                    class="w-full cursor-pointer accent-[#a855f7]"
+                    @input="onNumberInput(field, $event)"
+                    @blur="field.handleBlur"
+                  />
+                  <div class="relative">
+                    <span class="absolute right-4 top-1/2 -translate-y-1/2 font-extrabold text-muted-foreground">%</span>
+                    <Input
+                      :id="field.name"
+                      class="rounded-xl border-border/40 bg-[#f8fafc] pr-8 py-5 text-lg transition-all focus:ring-2 focus:ring-primary/40 focus:border-primary shadow-inner"
+                      type="number"
+                      :min="0"
+                      :max="100"
+                      step="0.01"
+                      :model-value="field.state.value"
+                      @input="onNumberInput(field, $event)"
+                      @blur="field.handleBlur"
+                    />
+                  </div>
+                  <p class="min-h-4 text-xs font-medium text-red-500" :class="{ invisible: !(field.state.meta.isTouched && displayError(field.state.meta.errors)) }">
+                    {{ displayError(field.state.meta.errors) || '-' }}
+                  </p>
+                </div>
+              </template>
+            </form.Field>
+
+            <form.Field
+              name="termMonths"
+              :validators="{ onBlur: ({ value }) => validateNumber(termRule, value) }"
+            >
+              <template #default="{ field }">
+                <div class="space-y-4">
+                  <div class="flex items-center justify-between">
+                    <label class="block text-sm font-bold tracking-wide text-[#1e1b4b]" :for="field.name">Loan Term</label>
+                  </div>
+                  <input
+                    type="range"
+                    min="12"
+                    max="360"
+                    step="12"
+                    :value="field.state.value"
+                    class="w-full cursor-pointer accent-[#10b981]"
+                    @input="onNumberInput(field, $event)"
+                    @blur="field.handleBlur"
+                  />
+                  <div class="relative">
+                    <span class="absolute right-4 top-1/2 -translate-y-1/2 font-extrabold text-muted-foreground">months</span>
+                    <Input
+                      :id="field.name"
+                      class="rounded-xl border-border/40 bg-[#f8fafc] pr-20 py-5 text-lg transition-all focus:ring-2 focus:ring-primary/40 focus:border-primary shadow-inner"
+                      type="number"
+                      :min="1"
+                      :step="1"
+                      :model-value="field.state.value"
+                      @input="onNumberInput(field, $event)"
+                      @blur="field.handleBlur"
+                    />
+                  </div>
+                  <p class="min-h-4 text-xs font-medium text-red-500" :class="{ invisible: !(field.state.meta.isTouched && displayError(field.state.meta.errors)) }">
+                    {{ displayError(field.state.meta.errors) || '-' }}
+                  </p>
+                </div>
+              </template>
+            </form.Field>
+
+            <div class="pt-4 border-t border-border/20">
+              <form.Subscribe :selector="(state) => ({ canSubmit: state.canSubmit, isSubmitting: state.isSubmitting })">
+                <template #default="{ canSubmit, isSubmitting }">
+                  <Button 
+                    class="w-full py-6 rounded-2xl text-base font-bold bg-[#1e1b4b] hover:bg-[#1e1b4b]/90 text-white shadow-sm transition-all"
+                    type="submit" 
+                    :disabled="!canSubmit || isSubmitting || isSaving"
+                  >
+                    {{ isSubmitting || isSaving ? 'Saving...' : 'Save Calculation' }}
+                  </Button>
+                </template>
+              </form.Subscribe>
+            </div>
+          </form>
+        </CardContent>
+      </Card>
+
+      <!-- RIGHT: Live Preview (60%) -->
+      <div class="flex flex-col gap-6" v-if="liveResult">
+        <Card class="bg-white rounded-[2rem] shadow-sm border border-border/30 overflow-hidden">
+          <CardHeader class="border-b border-border/20 bg-slate-50 pb-6 pt-6 px-6 sm:px-8">
+            <CardTitle class="text-xl font-extrabold text-[#1e1b4b] tracking-tight">Live Calculation Preview</CardTitle>
+          </CardHeader>
+          <CardContent class="p-6 sm:p-8 space-y-8">
+            <div class="grid grid-cols-1 md:grid-cols-[auto_1fr] gap-8 items-center">
+              <div class="flex justify-center">
+                <DonutChart
+                  :data="[
+                    { label: 'Principal', value: form.state.values.principal, color: '#0ea5e9' },
+                    { label: 'Interest', value: liveResult.totalInterest, color: '#10b981' }
+                  ]"
+                  :size="240"
+                  :strokeWidth="32"
+                  centerLabel="Monthly Pay"
+                  :centerValue="currency(liveResult.monthlyPayment)"
+                />
               </div>
-              <input
-                type="range"
-                min="0"
-                max="30"
-                step="0.25"
-                :value="field.state.value"
-                class="w-full cursor-pointer accent-primary"
-                @input="onNumberInput(field, $event)"
-                @blur="field.handleBlur"
-              />
-              <div class="flex justify-between text-xs font-medium text-muted-foreground/60 px-1">
-                <span>0%</span>
-                <span>15%</span>
-                <span>30%</span>
+
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div class="bg-[#f8fafc] rounded-[1.5rem] p-6 border border-border/40 sm:col-span-2">
+                  <p class="text-sm font-semibold uppercase tracking-wider text-muted-foreground mb-2">Total Paid</p>
+                  <p class="text-4xl font-extrabold text-[#1e1b4b]">{{ currency(liveResult.totalPayment) }}</p>
+                </div>
+                <div class="bg-[#f8fafc] rounded-xl p-5 border border-border/40">
+                  <p class="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-1">Total Principal</p>
+                  <p class="text-xl font-extrabold text-[#0ea5e9]">{{ currency(form.state.values.principal) }}</p>
+                </div>
+                <div class="bg-[#f8fafc] rounded-xl p-5 border border-border/40">
+                  <p class="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-1">Total Interest</p>
+                  <p class="text-xl font-extrabold text-[#10b981]">{{ currency(liveResult.totalInterest) }}</p>
+                </div>
               </div>
-              <Input
-                :id="field.name"
-                class="rounded-xl border-border/60 bg-white/60 px-4 py-6 text-lg transition-all focus:ring-2 focus:ring-primary/40 focus:border-primary shadow-sm"
-                type="number"
-                :min="0"
-                :max="100"
-                step="0.01"
-                :model-value="field.state.value"
-                @input="onNumberInput(field, $event)"
-                @blur="field.handleBlur"
-              />
-              <p
-                class="min-h-5 text-xs font-medium text-red-500"
-                :class="{ invisible: !(field.state.meta.isTouched && displayError(field.state.meta.errors)) }"
-              >
-                {{ displayError(field.state.meta.errors) || '-' }}
-              </p>
             </div>
-          </template>
-        </form.Field>
 
-        <form.Field
-          name="termMonths"
-          :validators="{
-            onBlur: ({ value }) => validateNumber(termRule, value)
-          }"
-        >
-          <template #default="{ field }">
-            <div class="space-y-2">
-              <div class="flex items-center justify-between mb-1">
-                <label class="block text-sm font-semibold tracking-wide text-foreground/80" :for="field.name">Term (months)</label>
-                <span class="rounded-full bg-primary/10 px-3 py-0.5 text-sm font-bold text-primary">{{ formatTerm(field.state.value) }}</span>
-              </div>
-              <Input
-                :id="field.name"
-                class="rounded-xl border-border/60 bg-white/60 px-4 py-6 text-lg transition-all focus:ring-2 focus:ring-primary/40 focus:border-primary shadow-sm"
-                type="number"
-                :min="1"
-                :step="1"
-                :model-value="field.state.value"
-                @input="onNumberInput(field, $event)"
-                @blur="field.handleBlur"
-              />
-              <p
-                class="min-h-5 text-xs font-medium text-red-500"
-                :class="{ invisible: !(field.state.meta.isTouched && displayError(field.state.meta.errors)) }"
-              >
-                {{ displayError(field.state.meta.errors) || '-' }}
-              </p>
+            <div>
+               <h3 class="text-lg font-bold text-[#1e1b4b] mb-4">Amortization Schedule</h3>
+               <div class="bg-white rounded-xl overflow-hidden border border-border/30">
+                 <AmortizationTable :rows="liveResult.amortization" />
+               </div>
             </div>
-          </template>
-        </form.Field>
-
-        <div class="sm:col-span-2 xl:col-span-3 pt-4 border-t border-border/40">
-          <form.Subscribe
-            :selector="(state) => ({ canSubmit: state.canSubmit, isSubmitting: state.isSubmitting })"
-          >
-            <template #default="{ canSubmit, isSubmitting }">
-              <Button 
-                class="w-full sm:w-auto px-8 py-6 rounded-full text-base font-bold bg-primary hover:bg-accent text-white shadow-float transition-all duration-300 transform hover:-translate-y-0.5"
-                type="submit" 
-                :disabled="!canSubmit || isSubmitting || isSaving"
-              >
-                {{ isSubmitting || isSaving ? 'Saving...' : 'Save Calculation' }}
-              </Button>
-            </template>
-          </form.Subscribe>
-        </div>
-      </form>
-
-      <div v-if="liveResult" class="space-y-6 rounded-3xl border border-primary/20 bg-primary/5 p-6 sm:p-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
-        <h3 class="text-xl font-bold text-foreground">Live Result Preview</h3>
-        <div class="grid gap-6 lg:grid-cols-[auto_1fr] items-center">
-          <div class="flex flex-col items-center justify-center p-5 bg-white/60 border border-border/40 rounded-2xl shadow-sm backdrop-blur-sm">
-            <DonutChart
-              :data="[
-                { label: 'Principal', value: form.state.values.principal, color: '#0ea5e9' },
-                { label: 'Interest', value: liveResult.totalInterest, color: '#f59e0b' }
-              ]"
-              :size="150"
-              :strokeWidth="16"
-              centerLabel="Total Pay"
-              :centerValue="currency(liveResult.totalPayment)"
-            />
-            <div class="flex items-center gap-4 mt-5 text-xs font-bold text-muted-foreground">
-              <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-[#0ea5e9]"></span> Principal</span>
-              <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-[#f59e0b]"></span> Interest</span>
-            </div>
-          </div>
-
-          <div class="grid gap-4 sm:grid-cols-1 md:grid-cols-3 h-full">
-            <div class="bg-white/60 rounded-2xl p-5 border border-border/40 shadow-sm backdrop-blur-sm flex flex-col justify-center">
-              <p class="text-sm font-semibold uppercase tracking-wider text-muted-foreground mb-1">Monthly Payment</p>
-              <p class="text-3xl font-extrabold text-foreground">{{ currency(liveResult.monthlyPayment) }}</p>
-            </div>
-            <div class="bg-white/60 rounded-2xl p-5 border border-border/40 shadow-sm backdrop-blur-sm flex flex-col justify-center">
-              <p class="text-sm font-semibold uppercase tracking-wider text-muted-foreground mb-1">Total Payment</p>
-              <p class="text-xl font-extrabold text-foreground mt-1">{{ currency(liveResult.totalPayment) }}</p>
-            </div>
-            <div class="bg-white/60 rounded-2xl p-5 border border-border/40 shadow-sm backdrop-blur-sm flex flex-col justify-center">
-              <p class="text-sm font-semibold uppercase tracking-wider text-muted-foreground mb-1">Total Interest</p>
-              <p class="text-xl font-extrabold text-foreground mt-1">{{ currency(liveResult.totalInterest) }}</p>
-            </div>
-          </div>
-        </div>
-        <div class="bg-white/80 rounded-2xl p-2 border border-border/40 overflow-hidden shadow-sm">
-          <AmortizationTable :rows="liveResult.amortization" />
-        </div>
+          </CardContent>
+        </Card>
+      </div>
+      
+      <div v-else class="flex items-center justify-center h-full bg-white rounded-[2rem] shadow-sm border border-border/30 border-dashed min-h-[400px]">
+         <p class="text-muted-foreground font-medium text-center max-w-xs">Enter valid loan parameters to see your live preview.</p>
       </div>
 
-      <div class="space-y-4 pt-10 border-t border-border/40">
-        <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <h3 class="text-xl font-bold text-foreground">History</h3>
-          <div class="flex flex-wrap gap-2">
-            <Button type="button" variant="outline" class="h-9 px-4 rounded-full text-xs font-semibold" :disabled="!hasHistory" @click="downloadHistoryCsv">
-              Download All CSV
-            </Button>
-            <Button type="button" variant="outline" class="h-9 px-4 rounded-full text-xs font-semibold" :disabled="!hasHistory || isExportingXlsx" @click="downloadHistoryXlsx">
-              {{ isExportingXlsx ? 'Preparing XLSX...' : 'Download All XLSX' }}
-            </Button>
-            <Button type="button" variant="ghost" class="h-9 px-4 rounded-full text-xs font-semibold text-red-500 hover:text-red-600 hover:bg-red-50" :disabled="!hasHistory" @click="deleteAllHistory">
-              Delete All
-            </Button>
-          </div>
+    </div>
+
+    <!-- Bottom: History (Full width) -->
+    <Card class="bg-white rounded-[2rem] shadow-sm border border-border/30 overflow-hidden w-full">
+      <CardHeader class="border-b border-border/20 bg-slate-50 flex flex-col sm:flex-row sm:items-center sm:justify-between pb-6 pt-6 px-6 sm:px-8">
+        <CardTitle class="text-xl font-extrabold text-[#1e1b4b] tracking-tight">Calculation History</CardTitle>
+        <div class="flex flex-wrap gap-3 mt-4 sm:mt-0">
+          <Button type="button" variant="outline" class="h-9 px-4 rounded-full text-xs font-semibold bg-white border-border/50 shadow-sm" :disabled="!hasHistory" @click="downloadHistoryCsv">
+            CSV
+          </Button>
+          <Button type="button" variant="outline" class="h-9 px-4 rounded-full text-xs font-semibold bg-white border-border/50 shadow-sm" :disabled="!hasHistory || isExportingXlsx" @click="downloadHistoryXlsx">
+            {{ isExportingXlsx ? '...' : 'XLSX' }}
+          </Button>
+          <Button type="button" variant="ghost" class="h-9 px-4 rounded-full text-xs font-semibold text-red-500 hover:text-red-600 hover:bg-red-50" :disabled="!hasHistory" @click="deleteAllHistory">
+            Delete All
+          </Button>
         </div>
+      </CardHeader>
+      
+      <CardContent class="p-6 sm:p-8">
         <p v-if="exportError" class="text-xs font-medium text-red-500">{{ exportError }}</p>
         <p v-if="isLoadingHistory" class="text-sm font-medium text-muted-foreground/70 animate-pulse">Loading calculation history...</p>
-        <div v-else-if="hasHistory" class="space-y-3">
+        
+        <div v-else-if="hasHistory" class="space-y-4">
           <details
             v-for="item in history"
             :key="item.id"
-            class="group overflow-hidden rounded-2xl border border-border/60 bg-white transition-all shadow-sm open:shadow-md"
+            class="group overflow-hidden rounded-[1.5rem] border border-border/30 bg-[#f8fafc] transition-all shadow-sm open:shadow-md"
           >
-            <summary class="cursor-pointer list-none p-5 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/50">
+            <summary class="cursor-pointer list-none p-6 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/50">
               <div class="flex flex-wrap items-center justify-between gap-4">
-                <span class="text-sm font-medium text-muted-foreground">{{ new Date(item.createdAt).toLocaleString() }}</span>
-                <span class="text-xl font-bold text-foreground">{{ currency(item.monthlyPayment) }}<span class="text-sm font-medium text-muted-foreground">/mo</span></span>
-                <span class="rounded-full bg-muted/60 px-3 py-1 text-xs font-bold text-foreground/70">{{ item.interestRate.toFixed(2) }}% &mdash; {{ formatTerm(item.termMonths) }}</span>
+                <div class="flex flex-col sm:flex-row sm:items-center gap-4">
+                   <span class="text-sm font-medium text-muted-foreground">{{ new Date(item.createdAt).toLocaleString() }}</span>
+                   <span class="rounded-full bg-white border border-border/40 px-4 py-1.5 text-xs font-bold text-[#1e1b4b]">{{ item.interestRate.toFixed(2) }}% &mdash; {{ formatTerm(item.termMonths) }}</span>
+                </div>
+                <span class="text-xl font-extrabold text-[#1e1b4b]">{{ currency(item.monthlyPayment) }}<span class="text-sm font-medium text-muted-foreground">/mo</span></span>
               </div>
             </summary>
-            <div class="space-y-5 border-t border-border/40 bg-muted/10 p-5">
+            <div class="space-y-6 border-t border-border/20 bg-white p-6">
               <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                <p class="text-xs font-bold uppercase tracking-wider text-muted-foreground">Monthly Payment Breakdown</p>
+                <p class="text-xs font-extrabold uppercase tracking-wider text-muted-foreground">Schedule Breakdown</p>
                 <div class="flex flex-wrap gap-2">
-                  <Button
-                    type="button"
-                    variant="outline"
-                    class="h-8 px-4 rounded-full text-xs font-semibold bg-white"
-                    @click.stop.prevent="downloadHistoryItemCsv(item)"
-                  >
+                  <Button type="button" variant="outline" class="h-8 px-4 rounded-full text-xs font-semibold bg-[#f8fafc]" @click.stop.prevent="downloadHistoryItemCsv(item)">
                     CSV
                   </Button>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    class="h-8 px-4 rounded-full text-xs font-semibold bg-white"
-                    :disabled="exportingItemXlsxId === item.id"
-                    @click.stop.prevent="downloadHistoryItemXlsx(item)"
-                  >
+                  <Button type="button" variant="outline" class="h-8 px-4 rounded-full text-xs font-semibold bg-[#f8fafc]" :disabled="exportingItemXlsxId === item.id" @click.stop.prevent="downloadHistoryItemXlsx(item)">
                     {{ exportingItemXlsxId === item.id ? '...' : 'XLSX' }}
                   </Button>
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    class="h-8 px-4 rounded-full text-xs font-semibold text-red-500 hover:text-red-600 hover:bg-red-50"
-                    @click.stop.prevent="deleteHistoryItem(item)"
-                  >
+                  <Button type="button" variant="ghost" class="h-8 px-4 rounded-full text-xs font-semibold text-red-500 hover:text-red-600 hover:bg-red-50" @click.stop.prevent="deleteHistoryItem(item)">
                     Delete
                   </Button>
                 </div>
               </div>
-              <div class="bg-white rounded-xl overflow-hidden border border-border/40 shadow-sm">
+              <div class="bg-white rounded-2xl overflow-hidden border border-border/30 shadow-sm">
                 <AmortizationTable :rows="item.amortization" />
               </div>
             </div>
           </details>
         </div>
-        <p v-else class="text-sm font-medium text-muted-foreground/70 py-8 text-center italic border border-dashed border-border rounded-xl">No saved calculations yet.</p>
-      </div>
-    </CardContent>
-  </Card>
+        <p v-else class="text-sm font-medium text-muted-foreground/70 py-12 text-center border border-dashed border-border/50 rounded-[2rem] bg-white">No saved calculations yet.</p>
+      </CardContent>
+    </Card>
+  </div>
 </template>
