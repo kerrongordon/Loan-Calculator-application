@@ -5,38 +5,54 @@ const activeView = useState<'calculator' | 'consolidation'>('loan-ui/active-view
 </script>
 
 <template>
-  <main class="min-h-screen bg-gradient-to-br from-cyan-50 via-slate-50 to-amber-50 px-4 py-10">
-    <div class="mx-auto flex w-full max-w-6xl flex-col gap-6">
-      <header class="space-y-3">
-        <p class="text-xs uppercase tracking-[0.2em] text-slate-500">Nuxt 4 • TanStack Form • Drizzle</p>
-        <h1 class="text-3xl font-bold text-slate-900 md:text-4xl">Loan Calculator Studio</h1>
-        <p class="max-w-3xl text-sm text-slate-600 md:text-base">
-          Calculate standard loan payments, review amortization schedules, and compare loan consolidation
-          scenarios with persisted history.
+  <main class="min-h-screen bg-background px-4 py-16 selection:bg-primary/20">
+    <div class="mx-auto flex w-full max-w-4xl flex-col gap-10">
+      <header class="flex flex-col items-center justify-center space-y-4 text-center">
+        <div class="inline-flex items-center rounded-full border border-primary/20 bg-primary/5 px-3 py-1 text-xs font-medium text-primary shadow-sm backdrop-blur-md">
+          <span class="mr-2 flex h-2 w-2 rounded-full bg-primary shadow-[0_0_8px_rgba(14,165,233,0.8)]"></span>
+          Loan Calculator Studio
+        </div>
+        <h1 class="text-4xl font-extrabold tracking-tight text-foreground sm:text-5xl lg:text-6xl">
+          Smarter <span class="text-transparent bg-clip-text bg-gradient-to-r from-primary to-accent">Financing</span>
+        </h1>
+        <p class="max-w-2xl text-base text-muted-foreground sm:text-lg">
+          Calculate standard loan payments, review amortization schedules, and evaluate consolidation scenarios in a single, refined interface.
         </p>
       </header>
 
-      <section class="rounded-xl border border-border bg-white/80 p-3 backdrop-blur-sm">
-        <div class="flex flex-wrap gap-2">
-          <Button
-            :variant="activeView === 'calculator' ? 'default' : 'outline'"
+      <section class="mx-auto flex justify-center">
+        <div class="inline-flex inset-0 rounded-full border border-border/50 bg-white/60 p-1 shadow-sm backdrop-blur-md">
+          <button
             type="button"
+            class="relative rounded-full px-6 py-2.5 text-sm font-medium transition-all duration-300"
+            :class="[
+              activeView === 'calculator'
+                ? 'bg-primary text-primary-foreground shadow-float'
+                : 'text-muted-foreground hover:text-foreground'
+            ]"
             @click="activeView = 'calculator'"
           >
             Loan Calculator
-          </Button>
-          <Button
-            :variant="activeView === 'consolidation' ? 'default' : 'outline'"
+          </button>
+          <button
             type="button"
+            class="relative rounded-full px-6 py-2.5 text-sm font-medium transition-all duration-300"
+            :class="[
+              activeView === 'consolidation'
+                ? 'bg-primary text-primary-foreground shadow-float'
+                : 'text-muted-foreground hover:text-foreground'
+            ]"
             @click="activeView = 'consolidation'"
           >
             Loan Consolidation
-          </Button>
+          </button>
         </div>
       </section>
 
-      <LoanCalculatorForm v-if="activeView === 'calculator'" />
-      <LoanConsolidationForm v-else />
+      <div class="transition-all duration-500 ease-in-out">
+        <LoanCalculatorForm v-if="activeView === 'calculator'" />
+        <LoanConsolidationForm v-else />
+      </div>
     </div>
   </main>
 </template>

@@ -187,15 +187,15 @@ onMounted(() => {
 </script>
 
 <template>
-  <Card>
-    <CardHeader>
-      <CardTitle>Loan Calculator</CardTitle>
-      <CardDescription>
+  <Card class="border-0 shadow-soft bg-white/80 backdrop-blur-2xl ring-1 ring-border/40 overflow-hidden rounded-3xl">
+    <CardHeader class="border-b border-border/30 bg-muted/30 pb-8 pt-8">
+      <CardTitle class="text-2xl font-extrabold text-foreground tracking-tight">Loan Calculator</CardTitle>
+      <CardDescription class="text-muted-foreground text-base mt-2">
         Enter principal, annual interest rate, and term to compute payment details and amortization.
       </CardDescription>
     </CardHeader>
-    <CardContent class="space-y-6">
-      <form class="grid gap-5 sm:grid-cols-2 xl:grid-cols-3" @submit.prevent="form.handleSubmit">
+    <CardContent class="space-y-10 pt-8 px-6 sm:px-10">
+      <form class="grid gap-8 sm:grid-cols-2 xl:grid-cols-3" @submit.prevent="form.handleSubmit">
         <form.Field
           name="principal"
           :validators="{
@@ -203,10 +203,11 @@ onMounted(() => {
           }"
         >
           <template #default="{ field }">
-            <div class="space-y-1.5">
-              <label class="block text-sm font-medium text-slate-700" :for="field.name">Principal ($)</label>
+            <div class="space-y-2">
+              <label class="mb-1 block text-sm font-semibold tracking-wide text-foreground/80" :for="field.name">Principal ($)</label>
               <Input
                 :id="field.name"
+                class="rounded-xl border-border/60 bg-white/60 px-4 py-6 text-lg transition-all focus:ring-2 focus:ring-primary/40 focus:border-primary shadow-sm"
                 type="number"
                 :min="1"
                 step="0.01"
@@ -215,7 +216,7 @@ onMounted(() => {
                 @blur="field.handleBlur"
               />
               <p
-                class="min-h-4 text-xs text-red-600"
+                class="min-h-5 text-xs font-medium text-red-500"
                 :class="{ invisible: !(field.state.meta.isTouched && displayError(field.state.meta.errors)) }"
               >
                 {{ displayError(field.state.meta.errors) || '-' }}
@@ -231,10 +232,10 @@ onMounted(() => {
           }"
         >
           <template #default="{ field }">
-            <div class="space-y-1.5">
-              <div class="flex items-center justify-between">
-                <label class="block text-sm font-medium text-slate-700" :for="field.name">Interest Rate</label>
-                <span class="text-sm font-semibold text-teal-700">{{ field.state.value.toFixed(2) }}%</span>
+            <div class="space-y-2">
+              <div class="flex items-center justify-between mb-1">
+                <label class="block text-sm font-semibold tracking-wide text-foreground/80" :for="field.name">Interest Rate</label>
+                <span class="rounded-full bg-primary/10 px-3 py-0.5 text-sm font-bold text-primary">{{ field.state.value.toFixed(2) }}%</span>
               </div>
               <input
                 type="range"
@@ -242,17 +243,18 @@ onMounted(() => {
                 max="30"
                 step="0.25"
                 :value="field.state.value"
-                class="w-full cursor-pointer accent-teal-600"
+                class="w-full cursor-pointer accent-primary"
                 @input="onNumberInput(field, $event)"
                 @blur="field.handleBlur"
               />
-              <div class="flex justify-between text-xs text-slate-400">
+              <div class="flex justify-between text-xs font-medium text-muted-foreground/60 px-1">
                 <span>0%</span>
                 <span>15%</span>
                 <span>30%</span>
               </div>
               <Input
                 :id="field.name"
+                class="rounded-xl border-border/60 bg-white/60 px-4 py-6 text-lg transition-all focus:ring-2 focus:ring-primary/40 focus:border-primary shadow-sm"
                 type="number"
                 :min="0"
                 :max="100"
@@ -262,7 +264,7 @@ onMounted(() => {
                 @blur="field.handleBlur"
               />
               <p
-                class="min-h-4 text-xs text-red-600"
+                class="min-h-5 text-xs font-medium text-red-500"
                 :class="{ invisible: !(field.state.meta.isTouched && displayError(field.state.meta.errors)) }"
               >
                 {{ displayError(field.state.meta.errors) || '-' }}
@@ -278,13 +280,14 @@ onMounted(() => {
           }"
         >
           <template #default="{ field }">
-            <div class="space-y-1.5">
-              <div class="flex items-center justify-between">
-                <label class="block text-sm font-medium text-slate-700" :for="field.name">Term (months)</label>
-                <span class="text-sm font-semibold text-teal-700">{{ formatTerm(field.state.value) }}</span>
+            <div class="space-y-2">
+              <div class="flex items-center justify-between mb-1">
+                <label class="block text-sm font-semibold tracking-wide text-foreground/80" :for="field.name">Term (months)</label>
+                <span class="rounded-full bg-primary/10 px-3 py-0.5 text-sm font-bold text-primary">{{ formatTerm(field.state.value) }}</span>
               </div>
               <Input
                 :id="field.name"
+                class="rounded-xl border-border/60 bg-white/60 px-4 py-6 text-lg transition-all focus:ring-2 focus:ring-primary/40 focus:border-primary shadow-sm"
                 type="number"
                 :min="1"
                 :step="1"
@@ -293,7 +296,7 @@ onMounted(() => {
                 @blur="field.handleBlur"
               />
               <p
-                class="min-h-4 text-xs text-red-600"
+                class="min-h-5 text-xs font-medium text-red-500"
                 :class="{ invisible: !(field.state.meta.isTouched && displayError(field.state.meta.errors)) }"
               >
                 {{ displayError(field.state.meta.errors) || '-' }}
@@ -302,95 +305,112 @@ onMounted(() => {
           </template>
         </form.Field>
 
-        <div class="sm:col-span-2 xl:col-span-3 pt-1">
+        <div class="sm:col-span-2 xl:col-span-3 pt-4 border-t border-border/40">
           <form.Subscribe
             :selector="(state) => ({ canSubmit: state.canSubmit, isSubmitting: state.isSubmitting })"
           >
             <template #default="{ canSubmit, isSubmitting }">
-              <Button type="submit" :disabled="!canSubmit || isSubmitting || isSaving">
-                {{ isSubmitting || isSaving ? 'Saving Calculation...' : 'Calculate & Save' }}
+              <Button 
+                class="w-full sm:w-auto px-8 py-6 rounded-full text-base font-bold bg-primary hover:bg-accent text-white shadow-float transition-all duration-300 transform hover:-translate-y-0.5"
+                type="submit" 
+                :disabled="!canSubmit || isSubmitting || isSaving"
+              >
+                {{ isSubmitting || isSaving ? 'Saving...' : 'Calculate & Save' }}
               </Button>
             </template>
           </form.Subscribe>
         </div>
       </form>
 
-      <div v-if="latestResult" class="space-y-4 rounded-lg border border-border bg-slate-50 p-4">
-        <h3 class="text-base font-semibold">Latest Result</h3>
-        <div class="grid gap-3 text-sm md:grid-cols-3">
-          <p><span class="font-medium">Monthly Payment:</span> {{ currency(latestResult.monthlyPayment) }}</p>
-          <p><span class="font-medium">Total Payment:</span> {{ currency(latestResult.totalPayment) }}</p>
-          <p><span class="font-medium">Total Interest:</span> {{ currency(latestResult.totalInterest) }}</p>
+      <div v-if="latestResult" class="space-y-6 rounded-3xl border border-primary/20 bg-primary/5 p-6 sm:p-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+        <h3 class="text-xl font-bold text-foreground">Latest Result</h3>
+        <div class="grid gap-6 sm:grid-cols-3">
+          <div class="bg-white/60 rounded-2xl p-5 border border-border/40 shadow-sm backdrop-blur-sm">
+            <p class="text-sm font-medium text-muted-foreground mb-1">Monthly Payment</p>
+            <p class="text-3xl font-extrabold text-foreground">{{ currency(latestResult.monthlyPayment) }}</p>
+          </div>
+          <div class="bg-white/60 rounded-2xl p-5 border border-border/40 shadow-sm backdrop-blur-sm">
+            <p class="text-sm font-medium text-muted-foreground mb-1">Total Payment</p>
+            <p class="text-xl font-bold text-foreground mt-2">{{ currency(latestResult.totalPayment) }}</p>
+          </div>
+          <div class="bg-white/60 rounded-2xl p-5 border border-border/40 shadow-sm backdrop-blur-sm">
+            <p class="text-sm font-medium text-muted-foreground mb-1">Total Interest</p>
+            <p class="text-xl font-bold text-foreground mt-2">{{ currency(latestResult.totalInterest) }}</p>
+          </div>
         </div>
-        <AmortizationTable :rows="latestResult.amortization" />
+        <div class="bg-white/80 rounded-2xl p-2 border border-border/40 overflow-hidden shadow-sm">
+          <AmortizationTable :rows="latestResult.amortization" />
+        </div>
       </div>
 
-      <div class="space-y-2">
-        <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-          <h3 class="text-base font-semibold">History</h3>
+      <div class="space-y-4 pt-10 border-t border-border/40">
+        <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <h3 class="text-xl font-bold text-foreground">History</h3>
           <div class="flex flex-wrap gap-2">
-            <Button type="button" variant="outline" class="h-8 px-3 py-1" :disabled="!hasHistory" @click="downloadHistoryCsv">
+            <Button type="button" variant="outline" class="h-9 px-4 rounded-full text-xs font-semibold" :disabled="!hasHistory" @click="downloadHistoryCsv">
               Download All CSV
             </Button>
-            <Button type="button" variant="outline" class="h-8 px-3 py-1" :disabled="!hasHistory || isExportingXlsx" @click="downloadHistoryXlsx">
+            <Button type="button" variant="outline" class="h-9 px-4 rounded-full text-xs font-semibold" :disabled="!hasHistory || isExportingXlsx" @click="downloadHistoryXlsx">
               {{ isExportingXlsx ? 'Preparing XLSX...' : 'Download All XLSX' }}
             </Button>
-            <Button type="button" variant="ghost" class="h-8 px-3 py-1 text-red-600" :disabled="!hasHistory" @click="deleteAllHistory">
+            <Button type="button" variant="ghost" class="h-9 px-4 rounded-full text-xs font-semibold text-red-500 hover:text-red-600 hover:bg-red-50" :disabled="!hasHistory" @click="deleteAllHistory">
               Delete All
             </Button>
           </div>
         </div>
-        <p v-if="exportError" class="text-xs text-red-600">{{ exportError }}</p>
-        <p v-if="isLoadingHistory" class="text-sm text-slate-500">Loading calculation history...</p>
-        <div v-else-if="hasHistory" class="space-y-2">
+        <p v-if="exportError" class="text-xs font-medium text-red-500">{{ exportError }}</p>
+        <p v-if="isLoadingHistory" class="text-sm font-medium text-muted-foreground/70 animate-pulse">Loading calculation history...</p>
+        <div v-else-if="hasHistory" class="space-y-3">
           <details
             v-for="item in history"
             :key="item.id"
-            class="overflow-hidden rounded-md border border-border bg-white"
+            class="group overflow-hidden rounded-2xl border border-border/60 bg-white transition-all shadow-sm open:shadow-md"
           >
-            <summary class="cursor-pointer list-none px-3 py-2">
-              <div class="flex flex-wrap items-center justify-between gap-2 text-sm">
-                <span>{{ new Date(item.createdAt).toLocaleString() }}</span>
-                <span class="font-medium">{{ currency(item.monthlyPayment) }}/mo</span>
-                <span class="text-slate-500">{{ item.interestRate.toFixed(2) }}% &mdash; {{ formatTerm(item.termMonths) }}</span>
+            <summary class="cursor-pointer list-none p-5 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/50">
+              <div class="flex flex-wrap items-center justify-between gap-4">
+                <span class="text-sm font-medium text-muted-foreground">{{ new Date(item.createdAt).toLocaleString() }}</span>
+                <span class="text-xl font-bold text-foreground">{{ currency(item.monthlyPayment) }}<span class="text-sm font-medium text-muted-foreground">/mo</span></span>
+                <span class="rounded-full bg-muted/60 px-3 py-1 text-xs font-bold text-foreground/70">{{ item.interestRate.toFixed(2) }}% &mdash; {{ formatTerm(item.termMonths) }}</span>
               </div>
             </summary>
-            <div class="space-y-3 border-t border-border bg-slate-50 p-3">
-              <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-                <p class="text-xs font-medium uppercase tracking-wide text-slate-500">Monthly Payment Breakdown</p>
+            <div class="space-y-5 border-t border-border/40 bg-muted/10 p-5">
+              <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                <p class="text-xs font-bold uppercase tracking-wider text-muted-foreground">Monthly Payment Breakdown</p>
                 <div class="flex flex-wrap gap-2">
                   <Button
                     type="button"
                     variant="outline"
-                    class="h-8 px-3 py-1"
+                    class="h-8 px-4 rounded-full text-xs font-semibold bg-white"
                     @click.stop.prevent="downloadHistoryItemCsv(item)"
                   >
-                    Download This CSV
+                    CSV
                   </Button>
                   <Button
                     type="button"
                     variant="outline"
-                    class="h-8 px-3 py-1"
+                    class="h-8 px-4 rounded-full text-xs font-semibold bg-white"
                     :disabled="exportingItemXlsxId === item.id"
                     @click.stop.prevent="downloadHistoryItemXlsx(item)"
                   >
-                    {{ exportingItemXlsxId === item.id ? 'Preparing XLSX...' : 'Download This XLSX' }}
+                    {{ exportingItemXlsxId === item.id ? '...' : 'XLSX' }}
                   </Button>
                   <Button
                     type="button"
                     variant="ghost"
-                    class="h-8 px-3 py-1 text-red-600"
+                    class="h-8 px-4 rounded-full text-xs font-semibold text-red-500 hover:text-red-600 hover:bg-red-50"
                     @click.stop.prevent="deleteHistoryItem(item)"
                   >
-                    Delete This
+                    Delete
                   </Button>
                 </div>
               </div>
-              <AmortizationTable :rows="item.amortization" />
+              <div class="bg-white rounded-xl overflow-hidden border border-border/40 shadow-sm">
+                <AmortizationTable :rows="item.amortization" />
+              </div>
             </div>
           </details>
         </div>
-        <p v-else class="text-sm text-slate-500">No saved calculations yet.</p>
+        <p v-else class="text-sm font-medium text-muted-foreground/70 py-8 text-center italic border border-dashed border-border rounded-xl">No saved calculations yet.</p>
       </div>
     </CardContent>
   </Card>
