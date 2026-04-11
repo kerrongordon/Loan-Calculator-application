@@ -63,6 +63,14 @@ const onNumberInput = (field: NumberFieldHandler, event: Event): void => {
   field.handleChange(toNumber(event))
 }
 
+const formatTerm = (months: number): string => {
+  const years = Math.floor(months / 12)
+  const rem = months % 12
+  if (years === 0) return `${rem}m`
+  if (rem === 0) return `${years}y`
+  return `${years}y ${rem}m`
+}
+
 const downloadHistoryCsv = (): void => {
   exportError.value = null
   exportRowsAsCsv(exportRows.value, 'loan-calculation-history')
@@ -224,7 +232,25 @@ onMounted(() => {
         >
           <template #default="{ field }">
             <div class="space-y-1.5">
-              <label class="block text-sm font-medium text-slate-700" :for="field.name">Interest Rate (%)</label>
+              <div class="flex items-center justify-between">
+                <label class="block text-sm font-medium text-slate-700" :for="field.name">Interest Rate</label>
+                <span class="text-sm font-semibold text-teal-700">{{ field.state.value.toFixed(2) }}%</span>
+              </div>
+              <input
+                type="range"
+                min="0"
+                max="30"
+                step="0.25"
+                :value="field.state.value"
+                class="w-full cursor-pointer accent-teal-600"
+                @input="onNumberInput(field, $event)"
+                @blur="field.handleBlur"
+              />
+              <div class="flex justify-between text-xs text-slate-400">
+                <span>0%</span>
+                <span>15%</span>
+                <span>30%</span>
+              </div>
               <Input
                 :id="field.name"
                 type="number"
@@ -253,12 +279,15 @@ onMounted(() => {
         >
           <template #default="{ field }">
             <div class="space-y-1.5">
-              <label class="block text-sm font-medium text-slate-700" :for="field.name">Term (months)</label>
+              <div class="flex items-center justify-between">
+                <label class="block text-sm font-medium text-slate-700" :for="field.name">Term (months)</label>
+                <span class="text-sm font-semibold text-teal-700">{{ formatTerm(field.state.value) }}</span>
+              </div>
               <Input
                 :id="field.name"
                 type="number"
                 :min="1"
-                step="1"
+                :step="1"
                 :model-value="field.state.value"
                 @input="onNumberInput(field, $event)"
                 @blur="field.handleBlur"
@@ -300,6 +329,12 @@ onMounted(() => {
         <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
           <h3 class="text-base font-semibold">History</h3>
           <div class="flex flex-wrap gap-2">
+            <Button type="button" variant="outline" class="h-8 px-3 py-1" :disabled="!hasHistory" @click="downloadHistoryCsv">
+              Download All CSV
+            </Button>
+            <Button type="button" variant="outline" class="h-8 px-3 py-1" :disabled="!hasHistory || isExportingXlsx" @click="downloadHistoryXlsx">
+              {{ isExportingXlsx ? 'Preparing XLSX...' : 'Download All XLSX' }}
+            </Button>
             <Button type="button" variant="ghost" class="h-8 px-3 py-1 text-red-600" :disabled="!hasHistory" @click="deleteAllHistory">
               Delete All
             </Button>
@@ -317,9 +352,7 @@ onMounted(() => {
               <div class="flex flex-wrap items-center justify-between gap-2 text-sm">
                 <span>{{ new Date(item.createdAt).toLocaleString() }}</span>
                 <span class="font-medium">{{ currency(item.monthlyPayment) }}/mo</span>
-                <span class="text-slate-500"
-                  >{{ item.interestRate.toFixed(2) }}% for {{ item.termMonths }} months</span
-                >
+                <span class="text-slate-500">{{ item.interestRate.toFixed(2) }}% &mdash; {{ formatTerm(item.termMonths) }}</span>
               </div>
             </summary>
             <div class="space-y-3 border-t border-border bg-slate-50 p-3">
