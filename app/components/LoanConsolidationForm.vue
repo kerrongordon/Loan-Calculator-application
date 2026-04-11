@@ -71,9 +71,11 @@ const form = useForm({
   }
 })
 
+const formValues = form.useStore((state) => state.values)
+
 const liveResult = computed(() => {
   const payload = {
-    ...form.state.values,
+    ...formValues.value,
     loans: loans.value
   }
   const parsed = consolidationInputSchema.safeParse(payload)

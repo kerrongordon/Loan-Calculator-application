@@ -178,11 +178,15 @@ const form = useForm({
 
     const result = calculate(parsed.data)
     await save(result)
+
+    form.reset()
   }
 })
 
+const formValues = form.useStore((state) => state.values)
+
 const liveResult = computed(() => {
-  const parsed = loanCalculatorInputSchema.safeParse(form.state.values)
+  const parsed = loanCalculatorInputSchema.safeParse(formValues.value)
   return parsed.success ? calculate(parsed.data) : null
 })
 
@@ -350,7 +354,7 @@ onMounted(() => {
               <div class="flex justify-center">
                 <DonutChart
                   :data="[
-                    { label: 'Principal', value: form.state.values.principal, color: '#0ea5e9' },
+                    { label: 'Principal', value: formValues.value.principal, color: '#0ea5e9' },
                     { label: 'Interest', value: liveResult.totalInterest, color: '#10b981' }
                   ]"
                   :size="240"
@@ -367,7 +371,7 @@ onMounted(() => {
                 </div>
                 <div class="bg-[#f8fafc] rounded-xl p-5 border border-border/40">
                   <p class="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-1">Total Principal</p>
-                  <p class="text-xl font-extrabold text-[#0ea5e9]">{{ currency(form.state.values.principal) }}</p>
+                  <p class="text-xl font-extrabold text-[#0ea5e9]">{{ currency(formValues.value.principal) }}</p>
                 </div>
                 <div class="bg-[#f8fafc] rounded-xl p-5 border border-border/40">
                   <p class="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-1">Total Interest</p>
