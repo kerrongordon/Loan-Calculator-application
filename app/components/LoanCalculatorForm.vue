@@ -181,6 +181,11 @@ const form = useForm({
   }
 })
 
+const liveResult = computed(() => {
+  const parsed = loanCalculatorInputSchema.safeParse(form.state.values)
+  return parsed.success ? calculate(parsed.data) : null
+})
+
 onMounted(() => {
   void loadHistory()
 })
@@ -315,26 +320,26 @@ onMounted(() => {
                 type="submit" 
                 :disabled="!canSubmit || isSubmitting || isSaving"
               >
-                {{ isSubmitting || isSaving ? 'Saving...' : 'Calculate & Save' }}
+                {{ isSubmitting || isSaving ? 'Saving...' : 'Save Calculation' }}
               </Button>
             </template>
           </form.Subscribe>
         </div>
       </form>
 
-      <div v-if="latestResult" class="space-y-6 rounded-3xl border border-primary/20 bg-primary/5 p-6 sm:p-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
-        <h3 class="text-xl font-bold text-foreground">Latest Result</h3>
+      <div v-if="liveResult" class="space-y-6 rounded-3xl border border-primary/20 bg-primary/5 p-6 sm:p-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+        <h3 class="text-xl font-bold text-foreground">Live Result Preview</h3>
         <div class="grid gap-6 lg:grid-cols-[auto_1fr] items-center">
           <div class="flex flex-col items-center justify-center p-5 bg-white/60 border border-border/40 rounded-2xl shadow-sm backdrop-blur-sm">
             <DonutChart
               :data="[
                 { label: 'Principal', value: form.state.values.principal, color: '#0ea5e9' },
-                { label: 'Interest', value: latestResult.totalInterest, color: '#f59e0b' }
+                { label: 'Interest', value: liveResult.totalInterest, color: '#f59e0b' }
               ]"
               :size="150"
               :strokeWidth="16"
               centerLabel="Total Pay"
-              :centerValue="currency(latestResult.totalPayment)"
+              :centerValue="currency(liveResult.totalPayment)"
             />
             <div class="flex items-center gap-4 mt-5 text-xs font-bold text-muted-foreground">
               <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-[#0ea5e9]"></span> Principal</span>
@@ -345,20 +350,20 @@ onMounted(() => {
           <div class="grid gap-4 sm:grid-cols-1 md:grid-cols-3 h-full">
             <div class="bg-white/60 rounded-2xl p-5 border border-border/40 shadow-sm backdrop-blur-sm flex flex-col justify-center">
               <p class="text-sm font-semibold uppercase tracking-wider text-muted-foreground mb-1">Monthly Payment</p>
-              <p class="text-3xl font-extrabold text-foreground">{{ currency(latestResult.monthlyPayment) }}</p>
+              <p class="text-3xl font-extrabold text-foreground">{{ currency(liveResult.monthlyPayment) }}</p>
             </div>
             <div class="bg-white/60 rounded-2xl p-5 border border-border/40 shadow-sm backdrop-blur-sm flex flex-col justify-center">
               <p class="text-sm font-semibold uppercase tracking-wider text-muted-foreground mb-1">Total Payment</p>
-              <p class="text-xl font-extrabold text-foreground mt-1">{{ currency(latestResult.totalPayment) }}</p>
+              <p class="text-xl font-extrabold text-foreground mt-1">{{ currency(liveResult.totalPayment) }}</p>
             </div>
             <div class="bg-white/60 rounded-2xl p-5 border border-border/40 shadow-sm backdrop-blur-sm flex flex-col justify-center">
               <p class="text-sm font-semibold uppercase tracking-wider text-muted-foreground mb-1">Total Interest</p>
-              <p class="text-xl font-extrabold text-foreground mt-1">{{ currency(latestResult.totalInterest) }}</p>
+              <p class="text-xl font-extrabold text-foreground mt-1">{{ currency(liveResult.totalInterest) }}</p>
             </div>
           </div>
         </div>
         <div class="bg-white/80 rounded-2xl p-2 border border-border/40 overflow-hidden shadow-sm">
-          <AmortizationTable :rows="latestResult.amortization" />
+          <AmortizationTable :rows="liveResult.amortization" />
         </div>
       </div>
 

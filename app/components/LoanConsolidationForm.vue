@@ -71,6 +71,15 @@ const form = useForm({
   }
 })
 
+const liveResult = computed(() => {
+  const payload = {
+    ...form.state.values,
+    loans: loans.value
+  }
+  const parsed = consolidationInputSchema.safeParse(payload)
+  return parsed.success ? calculate(parsed.data) : null
+})
+
 const suggestedTermMonths = computed(() => {
   const totalPrincipal = loans.value.reduce((sum, loan) => sum + loan.principal, 0)
 
@@ -422,26 +431,26 @@ onMounted(() => {
                 type="submit" 
                 :disabled="!canSubmit || isSubmitting || isSaving"
               >
-                {{ isSubmitting || isSaving ? 'Saving...' : 'Consolidate & Save' }}
+                {{ isSubmitting || isSaving ? 'Saving...' : 'Save Consolidation' }}
               </Button>
             </template>
           </form.Subscribe>
         </div>
       </form>
 
-      <div v-if="latestResult" class="space-y-6 rounded-3xl border border-primary/20 bg-primary/5 p-6 sm:p-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
-        <h3 class="text-xl font-bold text-foreground">Latest Consolidation Result</h3>
+      <div v-if="liveResult" class="space-y-6 rounded-3xl border border-primary/20 bg-primary/5 p-6 sm:p-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+        <h3 class="text-xl font-bold text-foreground">Live Consolidation Preview</h3>
         <div class="grid gap-6 xl:grid-cols-[auto_1fr] items-start xl:items-stretch">
           <div class="flex flex-col items-center justify-center p-5 bg-white/60 border border-border/40 rounded-2xl shadow-sm backdrop-blur-sm h-full">
             <DonutChart
               :data="[
-                { label: 'New Principal', value: latestResult.totalConsolidatedPrincipal, color: '#0ea5e9' },
-                { label: 'New Interest', value: latestResult.totalInterest, color: '#f59e0b' }
+                { label: 'New Principal', value: liveResult.totalConsolidatedPrincipal, color: '#0ea5e9' },
+                { label: 'New Interest', value: liveResult.totalInterest, color: '#f59e0b' }
               ]"
               :size="150"
               :strokeWidth="16"
               centerLabel="Consolidated"
-              :centerValue="currency(latestResult.totalConsolidatedPrincipal)"
+              :centerValue="currency(liveResult.totalConsolidatedPrincipal)"
             />
             <div class="flex items-center justify-center gap-4 mt-5 text-xs font-bold text-muted-foreground whitespace-nowrap">
               <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-[#0ea5e9]"></span> Principal</span>
@@ -452,37 +461,37 @@ onMounted(() => {
           <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 h-full">
             <div class="bg-white/60 rounded-2xl p-4 border border-border/40 shadow-sm backdrop-blur-sm">
               <p class="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-1">Weighted Rate</p>
-              <p class="text-xl font-extrabold text-foreground">{{ percent(latestResult.weightedAverageInterestRate) }}</p>
+              <p class="text-xl font-extrabold text-foreground">{{ percent(liveResult.weightedAverageInterestRate) }}</p>
             </div>
             <div class="bg-white/60 rounded-2xl p-4 border border-border/40 shadow-sm backdrop-blur-sm">
               <p class="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-1">Suggested Term</p>
-              <p class="text-xl font-extrabold text-foreground">{{ latestResult.suggestedTermMonths }} mo</p>
+              <p class="text-xl font-extrabold text-foreground">{{ liveResult.suggestedTermMonths }} mo</p>
             </div>
             <div class="bg-white/60 rounded-2xl p-4 border border-primary/30 shadow-sm backdrop-blur-sm bg-primary/5">
               <p class="text-xs font-semibold uppercase tracking-wider text-primary mb-1">New Payment</p>
-              <p class="text-2xl font-black text-primary">{{ currency(latestResult.monthlyPayment) }}</p>
+              <p class="text-2xl font-black text-primary">{{ currency(liveResult.monthlyPayment) }}</p>
             </div>
             
             <div class="bg-white/60 rounded-2xl p-4 border border-border/40 shadow-sm backdrop-blur-sm lg:col-span-3 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
               <div>
                 <p class="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-1">Current Monthly vs New</p>
                 <div class="flex items-center gap-3">
-                  <span class="text-lg font-bold text-muted-foreground line-through decoration-red-400 decoration-2">{{ currency(latestResult.currentMonthlyPayments) }}</span>
+                  <span class="text-lg font-bold text-muted-foreground line-through decoration-red-400 decoration-2">{{ currency(liveResult.currentMonthlyPayments) }}</span>
                   <span class="text-muted-foreground">&rarr;</span>
-                  <span class="text-xl font-extrabold text-foreground">{{ currency(latestResult.monthlyPayment) }}</span>
+                  <span class="text-xl font-extrabold text-foreground">{{ currency(liveResult.monthlyPayment) }}</span>
                 </div>
               </div>
               <div class="flex gap-6 sm:text-right">
                 <div>
                   <p class="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-1">Monthly Delta</p>
-                  <p class="text-xl font-extrabold" :class="latestResult.monthlyPaymentDelta <= 0 ? 'text-green-600' : 'text-red-500'">
-                    {{ latestResult.monthlyPaymentDelta <= 0 ? '' : '+' }}{{ currency(latestResult.monthlyPaymentDelta) }}
+                  <p class="text-xl font-extrabold" :class="liveResult.monthlyPaymentDelta <= 0 ? 'text-green-600' : 'text-red-500'">
+                    {{ liveResult.monthlyPaymentDelta <= 0 ? '' : '+' }}{{ currency(liveResult.monthlyPaymentDelta) }}
                   </p>
                 </div>
                 <div>
                   <p class="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-1">Interest Delta</p>
-                  <p class="text-xl font-extrabold" :class="latestResult.interestDelta <= 0 ? 'text-green-600' : 'text-red-500'">
-                    {{ latestResult.interestDelta <= 0 ? '' : '+' }}{{ currency(latestResult.interestDelta) }}
+                  <p class="text-xl font-extrabold" :class="liveResult.interestDelta <= 0 ? 'text-green-600' : 'text-red-500'">
+                    {{ liveResult.interestDelta <= 0 ? '' : '+' }}{{ currency(liveResult.interestDelta) }}
                   </p>
                 </div>
               </div>
@@ -490,7 +499,7 @@ onMounted(() => {
           </div>
         </div>
         <div class="bg-white/80 rounded-2xl p-2 border border-border/40 overflow-hidden shadow-sm">
-          <AmortizationTable :rows="latestResult.amortization" />
+          <AmortizationTable :rows="liveResult.amortization" />
         </div>
       </div>
 
