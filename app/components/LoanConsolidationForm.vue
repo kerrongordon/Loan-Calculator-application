@@ -83,14 +83,14 @@ const liveResult = computed(() => {
 })
 
 const suggestedTermMonths = computed(() => {
-  const totalPrincipal = loans.value.reduce((sum, loan) => sum + loan.principal, 0)
+  const totalPrincipal = loans.value.reduce((sum: number, loan: ConsolidationLoanInput) => sum + loan.principal, 0)
 
   if (totalPrincipal === 0) {
     return 1
   }
 
   const weightedTerm = loans.value.reduce(
-    (sum, loan) => sum + loan.principal * loan.remainingTermMonths,
+    (sum: number, loan: ConsolidationLoanInput) => sum + loan.principal * loan.remainingTermMonths,
     0
   )
 
@@ -154,7 +154,7 @@ const removeLoan = (index: number): void => {
     return
   }
 
-  loans.value = loans.value.filter((_, currentIndex) => currentIndex !== index)
+  loans.value = loans.value.filter((_: ConsolidationLoanInput, currentIndex: number) => currentIndex !== index)
 }
 
 const updateLoan = (
