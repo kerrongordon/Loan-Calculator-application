@@ -347,7 +347,7 @@ onMounted(() => {
       <!-- RIGHT: Live Preview (60%) -->
       <div class="flex flex-col gap-6" v-if="liveResult">
         <Card id="calculator-live-preview" class="bg-white/5 rounded-[2rem] shadow-sm border border-white/10 overflow-hidden backdrop-blur-xl">
-          <CardHeader class="border-b border-white/10 bg-white/5 flex flex-col sm:flex-row sm:items-center sm:justify-between pb-6 pt-6 px-6 sm:px-8">
+          <CardHeader data-html2canvas-ignore="true" class="border-b border-white/10 bg-white/5 flex flex-col sm:flex-row sm:items-center sm:justify-between pb-6 pt-6 px-6 sm:px-8">
             <CardTitle class="text-xl font-extrabold text-white tracking-tight">Live Calculation Preview</CardTitle>
             <Button type="button" variant="outline" class="h-9 px-4 rounded-full text-xs font-semibold bg-white/5 border-white/10 shadow-sm text-slate-300 mt-4 sm:mt-0" :disabled="isExportingPdf" @click="downloadPdf('calculator-live-preview', 'loan-calculation-summary.pdf')">
               {{ isExportingPdf ? 'Generating PDF...' : 'Download PDF' }}
