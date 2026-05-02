@@ -9,9 +9,9 @@ const { currency } = useFormatters()
 </script>
 
 <template>
-  <div class="max-h-96 overflow-auto rounded-md border border-border">
+  <div class="max-h-96 overflow-auto rounded-md border border-white/10">
     <table class="min-w-full text-left text-sm">
-      <thead class="sticky top-0 bg-slate-100 text-slate-700">
+      <thead class="sticky top-0 bg-white/10 backdrop-blur-md text-slate-200">
         <tr>
           <th class="px-3 py-2 font-medium">Month</th>
           <th class="px-3 py-2 font-medium">Payment</th>
@@ -21,7 +21,7 @@ const { currency } = useFormatters()
         </tr>
       </thead>
       <tbody>
-        <tr v-for="row in rows" :key="row.month" class="border-t border-slate-100">
+        <tr v-for="row in rows" :key="row.month" class="border-t border-white/10 text-slate-300 hover:bg-white/5 transition-colors">
           <td class="px-3 py-2">{{ row.month }}</td>
           <td class="px-3 py-2">{{ currency(row.payment) }}</td>
           <td class="px-3 py-2">{{ currency(row.principal) }}</td>

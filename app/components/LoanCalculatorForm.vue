@@ -201,9 +201,9 @@ onMounted(() => {
     <div class="grid grid-cols-1 lg:grid-cols-[2fr_3fr] gap-6 xl:gap-8 items-start">
       
       <!-- LEFT: Calculator Form (40%) -->
-      <Card class="bg-white rounded-[2rem] shadow-sm border border-border/30 overflow-hidden">
-        <CardHeader class="border-b border-border/20 bg-slate-50 pb-6 pt-6 px-6 sm:px-8">
-          <CardTitle class="text-xl font-extrabold text-[#1e1b4b] tracking-tight">Loan Calculator</CardTitle>
+      <Card class="bg-white/5 rounded-[2rem] shadow-sm border border-white/10 overflow-hidden backdrop-blur-xl">
+        <CardHeader class="border-b border-white/10 bg-white/5 pb-6 pt-6 px-6 sm:px-8">
+          <CardTitle class="text-xl font-extrabold text-white tracking-tight">Loan Calculator</CardTitle>
           <CardDescription class="text-muted-foreground text-sm mt-1">
             Configure parameters to compute payment details and amortization.
           </CardDescription>
@@ -216,7 +216,7 @@ onMounted(() => {
             >
               <template #default="{ field }">
                 <div class="space-y-4">
-                  <label class="block text-sm font-bold tracking-wide text-[#1e1b4b]" :for="field.name">Principal & Interest ($)</label>
+                  <label class="block text-sm font-bold tracking-wide text-white" :for="field.name">Principal & Interest ($)</label>
                   <input
                     type="range"
                     min="1000"
@@ -231,7 +231,7 @@ onMounted(() => {
                     <span class="absolute left-4 top-1/2 -translate-y-1/2 font-extrabold text-muted-foreground">$</span>
                     <Input
                       :id="field.name"
-                      class="rounded-xl border-border/40 bg-[#f8fafc] pl-8 py-5 text-lg transition-all focus:ring-2 focus:ring-primary/40 focus:border-primary shadow-inner"
+                      class="rounded-xl border-white/10 bg-transparent pl-8 py-5 text-lg transition-all focus:ring-2 focus:ring-primary/40 focus:border-primary shadow-inner"
                       type="number"
                       :min="1"
                       step="0.01"
@@ -254,7 +254,7 @@ onMounted(() => {
               <template #default="{ field }">
                 <div class="space-y-4">
                   <div class="flex items-center justify-between">
-                    <label class="block text-sm font-bold tracking-wide text-[#1e1b4b]" :for="field.name">Mortgage Interest Rate</label>
+                    <label class="block text-sm font-bold tracking-wide text-white" :for="field.name">Mortgage Interest Rate</label>
                   </div>
                   <input
                     type="range"
@@ -270,7 +270,7 @@ onMounted(() => {
                     <span class="absolute right-4 top-1/2 -translate-y-1/2 font-extrabold text-muted-foreground">%</span>
                     <Input
                       :id="field.name"
-                      class="rounded-xl border-border/40 bg-[#f8fafc] pr-8 py-5 text-lg transition-all focus:ring-2 focus:ring-primary/40 focus:border-primary shadow-inner"
+                      class="rounded-xl border-white/10 bg-transparent pr-8 py-5 text-lg transition-all focus:ring-2 focus:ring-primary/40 focus:border-primary shadow-inner"
                       type="number"
                       :min="0"
                       :max="100"
@@ -294,7 +294,7 @@ onMounted(() => {
               <template #default="{ field }">
                 <div class="space-y-4">
                   <div class="flex items-center justify-between">
-                    <label class="block text-sm font-bold tracking-wide text-[#1e1b4b]" :for="field.name">Loan Term</label>
+                    <label class="block text-sm font-bold tracking-wide text-white" :for="field.name">Loan Term</label>
                   </div>
                   <input
                     type="range"
@@ -310,7 +310,7 @@ onMounted(() => {
                     <span class="absolute right-4 top-1/2 -translate-y-1/2 font-extrabold text-muted-foreground">months</span>
                     <Input
                       :id="field.name"
-                      class="rounded-xl border-border/40 bg-[#f8fafc] pr-20 py-5 text-lg transition-all focus:ring-2 focus:ring-primary/40 focus:border-primary shadow-inner"
+                      class="rounded-xl border-white/10 bg-transparent pr-20 py-5 text-lg transition-all focus:ring-2 focus:ring-primary/40 focus:border-primary shadow-inner"
                       type="number"
                       :min="1"
                       :step="1"
@@ -326,7 +326,7 @@ onMounted(() => {
               </template>
             </form.Field>
 
-            <div class="pt-4 border-t border-border/20">
+            <div class="pt-4 border-t border-white/10">
               <form.Subscribe :selector="(state) => ({ canSubmit: state.canSubmit, isSubmitting: state.isSubmitting })">
                 <template #default="{ canSubmit, isSubmitting }">
                   <Button 
@@ -345,9 +345,9 @@ onMounted(() => {
 
       <!-- RIGHT: Live Preview (60%) -->
       <div class="flex flex-col gap-6" v-if="liveResult">
-        <Card class="bg-white rounded-[2rem] shadow-sm border border-border/30 overflow-hidden">
-          <CardHeader class="border-b border-border/20 bg-slate-50 pb-6 pt-6 px-6 sm:px-8">
-            <CardTitle class="text-xl font-extrabold text-[#1e1b4b] tracking-tight">Live Calculation Preview</CardTitle>
+        <Card class="bg-white/5 rounded-[2rem] shadow-sm border border-white/10 overflow-hidden backdrop-blur-xl">
+          <CardHeader class="border-b border-white/10 bg-white/5 pb-6 pt-6 px-6 sm:px-8">
+            <CardTitle class="text-xl font-extrabold text-white tracking-tight">Live Calculation Preview</CardTitle>
           </CardHeader>
           <CardContent class="p-6 sm:p-8 space-y-8">
             <div class="grid grid-cols-1 md:grid-cols-[auto_1fr] gap-8 items-center">
@@ -365,15 +365,15 @@ onMounted(() => {
               </div>
 
               <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div class="bg-[#f8fafc] rounded-[1.5rem] p-6 border border-border/40 sm:col-span-2">
+                <div class="bg-black/20 rounded-[1.5rem] p-6 border border-white/10 sm:col-span-2">
                   <p class="text-sm font-semibold uppercase tracking-wider text-muted-foreground mb-2">Total Paid</p>
-                  <p class="text-4xl font-extrabold text-[#1e1b4b]">{{ currency(liveResult.totalPayment) }}</p>
+                  <p class="text-4xl font-extrabold text-white">{{ currency(liveResult.totalPayment) }}</p>
                 </div>
-                <div class="bg-[#f8fafc] rounded-xl p-5 border border-border/40">
+                <div class="bg-black/20 rounded-xl p-5 border border-white/10">
                   <p class="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-1">Total Principal</p>
                   <p class="text-xl font-extrabold text-[#0ea5e9]">{{ currency(formValues.principal) }}</p>
                 </div>
-                <div class="bg-[#f8fafc] rounded-xl p-5 border border-border/40">
+                <div class="bg-black/20 rounded-xl p-5 border border-white/10">
                   <p class="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-1">Total Interest</p>
                   <p class="text-xl font-extrabold text-[#10b981]">{{ currency(liveResult.totalInterest) }}</p>
                 </div>
@@ -381,8 +381,8 @@ onMounted(() => {
             </div>
 
             <div>
-               <h3 class="text-lg font-bold text-[#1e1b4b] mb-4">Amortization Schedule</h3>
-               <div class="bg-white rounded-xl overflow-hidden border border-border/30">
+               <h3 class="text-lg font-bold text-white mb-4">Amortization Schedule</h3>
+               <div class="bg-black/20 rounded-xl overflow-hidden border border-white/10">
                  <AmortizationTable :rows="liveResult.amortization" />
                </div>
             </div>
@@ -390,24 +390,24 @@ onMounted(() => {
         </Card>
       </div>
       
-      <div v-else class="flex items-center justify-center h-full bg-white rounded-[2rem] shadow-sm border border-border/30 border-dashed min-h-[400px]">
+      <div v-else class="flex items-center justify-center h-full bg-white/5 backdrop-blur-xl rounded-[2rem] shadow-sm border border-white/10 border-dashed min-h-[400px]">
          <p class="text-muted-foreground font-medium text-center max-w-xs">Enter valid loan parameters to see your live preview.</p>
       </div>
 
     </div>
 
     <!-- Bottom: History (Full width) -->
-    <Card class="bg-white rounded-[2rem] shadow-sm border border-border/30 overflow-hidden w-full">
-      <CardHeader class="border-b border-border/20 bg-slate-50 flex flex-col sm:flex-row sm:items-center sm:justify-between pb-6 pt-6 px-6 sm:px-8">
-        <CardTitle class="text-xl font-extrabold text-[#1e1b4b] tracking-tight">Calculation History</CardTitle>
+    <Card class="bg-white/5 rounded-[2rem] shadow-sm border border-white/10 overflow-hidden w-full backdrop-blur-xl">
+      <CardHeader class="border-b border-white/10 bg-white/5 flex flex-col sm:flex-row sm:items-center sm:justify-between pb-6 pt-6 px-6 sm:px-8">
+        <CardTitle class="text-xl font-extrabold text-white tracking-tight">Calculation History</CardTitle>
         <div class="flex flex-wrap gap-3 mt-4 sm:mt-0">
-          <Button type="button" variant="outline" class="h-9 px-4 rounded-full text-xs font-semibold bg-white border-border/50 shadow-sm" :disabled="!hasHistory" @click="downloadHistoryCsv">
+          <Button type="button" variant="outline" class="h-9 px-4 rounded-full text-xs font-semibold bg-white/5 border-white/10 shadow-sm text-slate-300" :disabled="!hasHistory" @click="downloadHistoryCsv">
             CSV
           </Button>
-          <Button type="button" variant="outline" class="h-9 px-4 rounded-full text-xs font-semibold bg-white border-border/50 shadow-sm" :disabled="!hasHistory || isExportingXlsx" @click="downloadHistoryXlsx">
+          <Button type="button" variant="outline" class="h-9 px-4 rounded-full text-xs font-semibold bg-white/5 border-white/10 shadow-sm text-slate-300" :disabled="!hasHistory || isExportingXlsx" @click="downloadHistoryXlsx">
             {{ isExportingXlsx ? '...' : 'XLSX' }}
           </Button>
-          <Button type="button" variant="ghost" class="h-9 px-4 rounded-full text-xs font-semibold text-red-500 hover:text-red-600 hover:bg-red-50" :disabled="!hasHistory" @click="deleteAllHistory">
+          <Button type="button" variant="ghost" class="h-9 px-4 rounded-full text-xs font-semibold text-red-400 hover:text-red-300 hover:bg-red-500/20" :disabled="!hasHistory" @click="deleteAllHistory">
             Delete All
           </Button>
         </div>
@@ -421,39 +421,39 @@ onMounted(() => {
           <details
             v-for="item in history"
             :key="item.id"
-            class="group overflow-hidden rounded-[1.5rem] border border-border/30 bg-[#f8fafc] transition-all shadow-sm open:shadow-md"
+            class="group overflow-hidden rounded-[1.5rem] border border-white/10 bg-black/20 transition-all shadow-sm open:shadow-md"
           >
             <summary class="cursor-pointer list-none p-6 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/50">
               <div class="flex flex-wrap items-center justify-between gap-4">
                 <div class="flex flex-col sm:flex-row sm:items-center gap-4">
                    <span class="text-sm font-medium text-muted-foreground">{{ new Date(item.createdAt).toLocaleString() }}</span>
-                   <span class="rounded-full bg-white border border-border/40 px-4 py-1.5 text-xs font-bold text-[#1e1b4b]">{{ item.interestRate.toFixed(2) }}% &mdash; {{ formatTerm(item.termMonths) }}</span>
+                   <span class="rounded-full bg-white/5 border border-white/10 px-4 py-1.5 text-xs font-bold text-white">{{ item.interestRate.toFixed(2) }}% &mdash; {{ formatTerm(item.termMonths) }}</span>
                 </div>
-                <span class="text-xl font-extrabold text-[#1e1b4b]">{{ currency(item.monthlyPayment) }}<span class="text-sm font-medium text-muted-foreground">/mo</span></span>
+                <span class="text-xl font-extrabold text-white">{{ currency(item.monthlyPayment) }}<span class="text-sm font-medium text-muted-foreground">/mo</span></span>
               </div>
             </summary>
-            <div class="space-y-6 border-t border-border/20 bg-white p-6">
+            <div class="space-y-6 border-t border-white/10 bg-transparent p-6">
               <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                 <p class="text-xs font-extrabold uppercase tracking-wider text-muted-foreground">Schedule Breakdown</p>
                 <div class="flex flex-wrap gap-2">
-                  <Button type="button" variant="outline" class="h-8 px-4 rounded-full text-xs font-semibold bg-[#f8fafc]" @click.stop.prevent="downloadHistoryItemCsv(item)">
+                  <Button type="button" variant="outline" class="h-8 px-4 rounded-full text-xs font-semibold bg-white/5 border-white/10 text-slate-300 hover:bg-white/10 hover:text-white" @click.stop.prevent="downloadHistoryItemCsv(item)">
                     CSV
                   </Button>
-                  <Button type="button" variant="outline" class="h-8 px-4 rounded-full text-xs font-semibold bg-[#f8fafc]" :disabled="exportingItemXlsxId === item.id" @click.stop.prevent="downloadHistoryItemXlsx(item)">
+                  <Button type="button" variant="outline" class="h-8 px-4 rounded-full text-xs font-semibold bg-white/5 border-white/10 text-slate-300 hover:bg-white/10 hover:text-white" :disabled="exportingItemXlsxId === item.id" @click.stop.prevent="downloadHistoryItemXlsx(item)">
                     {{ exportingItemXlsxId === item.id ? '...' : 'XLSX' }}
                   </Button>
-                  <Button type="button" variant="ghost" class="h-8 px-4 rounded-full text-xs font-semibold text-red-500 hover:text-red-600 hover:bg-red-50" @click.stop.prevent="deleteHistoryItem(item)">
+                  <Button type="button" variant="ghost" class="h-8 px-4 rounded-full text-xs font-semibold text-red-400 hover:text-red-300 hover:bg-red-500/20" @click.stop.prevent="deleteHistoryItem(item)">
                     Delete
                   </Button>
                 </div>
               </div>
-              <div class="bg-white rounded-2xl overflow-hidden border border-border/30 shadow-sm">
+              <div class="bg-black/20 rounded-2xl overflow-hidden border border-white/10 shadow-sm">
                 <AmortizationTable :rows="item.amortization" />
               </div>
             </div>
           </details>
         </div>
-        <p v-else class="text-sm font-medium text-muted-foreground/70 py-12 text-center border border-dashed border-border/50 rounded-[2rem] bg-white">No saved calculations yet.</p>
+        <p v-else class="text-sm font-medium text-muted-foreground/70 py-12 text-center border border-dashed border-white/20 rounded-[2rem] bg-black/20 backdrop-blur-md">No saved calculations yet.</p>
       </CardContent>
     </Card>
   </div>
