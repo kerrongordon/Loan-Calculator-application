@@ -6,5 +6,14 @@ export default defineNuxtConfig({
   typescript: {
     strict: true,
     typeCheck: true
+  },
+  vite: {
+    optimizeDeps: {
+      include: [
+        '@tanstack/vue-form',
+        'zod',
+        '@vueuse/core'
+      ]
+    }
   }
 })
