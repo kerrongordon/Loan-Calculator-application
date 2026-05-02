@@ -39,6 +39,7 @@ type LoanHistoryItem = (typeof history.value)[number]
 const isExportingXlsx = ref(false)
 const exportingItemXlsxId = ref<number | null>(null)
 const exportError = ref<string | null>(null)
+const showReport = ref(false)
 
 const validateNumber = (rule: typeof principalRule, value: number): string | undefined => {
   const parsed = rule.safeParse(value)
@@ -248,10 +249,25 @@ watch(formValues, (newVals) => {
               :validators="{ onBlur: ({ value }) => validateNumber(principalRule, value) }"
             >
               <template #default="{ field }">
-                <div class="space-y-4">
-                  <div class="flex items-center">
-                    <label class="block text-sm font-bold tracking-wide text-white" :for="field.name">Principal & Interest ($)</label>
-                    <Tooltip text="The total initial amount borrowed, which accrues interest over time." />
+                <div class="space-y-2">
+                  <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-2">
+                      <label class="block text-sm font-bold tracking-wide text-white" :for="field.name">Principal & Interest</label>
+                      <Tooltip text="The total initial amount borrowed, which accrues interest over time." />
+                    </div>
+                    <div class="relative w-32 sm:w-40 flex items-center border-b border-white/20 focus-within:border-primary transition-colors pb-1">
+                      <span class="text-muted-foreground font-bold mr-2">$</span>
+                      <input
+                        :id="field.name"
+                        class="w-full bg-transparent border-none p-0 text-right text-lg font-bold text-white focus:ring-0 focus:outline-none"
+                        type="number"
+                        :min="1"
+                        step="0.01"
+                        :value="field.state.value"
+                        @input="onNumberInput(field, $event)"
+                        @blur="field.handleBlur"
+                      />
+                    </div>
                   </div>
                   <input
                     type="range"
@@ -259,23 +275,10 @@ watch(formValues, (newVals) => {
                     max="1000000"
                     step="5000"
                     :value="field.state.value"
-                    class="w-full cursor-pointer accent-primary"
+                    class="w-full cursor-pointer accent-primary mt-2"
                     @input="onNumberInput(field, $event)"
                     @blur="field.handleBlur"
                   />
-                  <div class="relative">
-                    <span class="absolute left-4 top-1/2 -translate-y-1/2 font-extrabold text-muted-foreground">$</span>
-                    <Input
-                      :id="field.name"
-                      class="rounded-xl border-white/10 bg-transparent pl-8 py-5 text-lg transition-all focus:ring-2 focus:ring-primary/40 focus:border-primary shadow-inner"
-                      type="number"
-                      :min="1"
-                      step="0.01"
-                      :model-value="field.state.value"
-                      @input="onNumberInput(field, $event)"
-                      @blur="field.handleBlur"
-                    />
-                  </div>
                   <p class="min-h-4 text-xs font-medium text-red-500" :class="{ invisible: !(field.state.meta.isTouched && displayError(field.state.meta.errors)) }">
                     {{ displayError(field.state.meta.errors) || '-' }}
                   </p>
@@ -288,11 +291,25 @@ watch(formValues, (newVals) => {
               :validators="{ onBlur: ({ value }) => validateNumber(interestRateRule, value) }"
             >
               <template #default="{ field }">
-                <div class="space-y-4">
+                <div class="space-y-2">
                   <div class="flex items-center justify-between">
-                    <div class="flex items-center">
-                      <label class="block text-sm font-bold tracking-wide text-white" :for="field.name">Mortgage Interest Rate</label>
+                    <div class="flex items-center gap-2">
+                      <label class="block text-sm font-bold tracking-wide text-white" :for="field.name">Rate of Interest</label>
                       <Tooltip text="The annual percentage rate (APR) charged for borrowing the money." />
+                    </div>
+                    <div class="relative w-24 sm:w-32 flex items-center border-b border-white/20 focus-within:border-primary transition-colors pb-1">
+                      <span class="text-muted-foreground font-bold mr-2">%</span>
+                      <input
+                        :id="field.name"
+                        class="w-full bg-transparent border-none p-0 text-right text-lg font-bold text-white focus:ring-0 focus:outline-none"
+                        type="number"
+                        :min="0"
+                        :max="100"
+                        step="0.01"
+                        :value="field.state.value"
+                        @input="onNumberInput(field, $event)"
+                        @blur="field.handleBlur"
+                      />
                     </div>
                   </div>
                   <input
@@ -301,24 +318,10 @@ watch(formValues, (newVals) => {
                     max="15"
                     step="0.1"
                     :value="field.state.value"
-                    class="w-full cursor-pointer accent-[#a855f7]"
+                    class="w-full cursor-pointer accent-[#a855f7] mt-2"
                     @input="onNumberInput(field, $event)"
                     @blur="field.handleBlur"
                   />
-                  <div class="relative">
-                    <span class="absolute right-4 top-1/2 -translate-y-1/2 font-extrabold text-muted-foreground">%</span>
-                    <Input
-                      :id="field.name"
-                      class="rounded-xl border-white/10 bg-transparent pr-8 py-5 text-lg transition-all focus:ring-2 focus:ring-primary/40 focus:border-primary shadow-inner"
-                      type="number"
-                      :min="0"
-                      :max="100"
-                      step="0.01"
-                      :model-value="field.state.value"
-                      @input="onNumberInput(field, $event)"
-                      @blur="field.handleBlur"
-                    />
-                  </div>
                   <p class="min-h-4 text-xs font-medium text-red-500" :class="{ invisible: !(field.state.meta.isTouched && displayError(field.state.meta.errors)) }">
                     {{ displayError(field.state.meta.errors) || '-' }}
                   </p>
@@ -331,9 +334,22 @@ watch(formValues, (newVals) => {
               :validators="{ onBlur: ({ value }) => validateNumber(termRule, value) }"
             >
               <template #default="{ field }">
-                <div class="space-y-4">
+                <div class="space-y-2">
                   <div class="flex items-center justify-between">
-                    <label class="block text-sm font-bold tracking-wide text-white" :for="field.name">Loan Term</label>
+                    <label class="block text-sm font-bold tracking-wide text-white" :for="field.name">Loan Tenure (Months)</label>
+                    <div class="relative w-24 sm:w-32 flex items-center border-b border-white/20 focus-within:border-primary transition-colors pb-1">
+                      <span class="text-muted-foreground font-bold mr-2 text-sm">Mo</span>
+                      <input
+                        :id="field.name"
+                        class="w-full bg-transparent border-none p-0 text-right text-lg font-bold text-white focus:ring-0 focus:outline-none"
+                        type="number"
+                        :min="1"
+                        :step="1"
+                        :value="field.state.value"
+                        @input="onNumberInput(field, $event)"
+                        @blur="field.handleBlur"
+                      />
+                    </div>
                   </div>
                   <input
                     type="range"
@@ -341,23 +357,10 @@ watch(formValues, (newVals) => {
                     max="360"
                     step="12"
                     :value="field.state.value"
-                    class="w-full cursor-pointer accent-[#10b981]"
+                    class="w-full cursor-pointer accent-[#10b981] mt-2"
                     @input="onNumberInput(field, $event)"
                     @blur="field.handleBlur"
                   />
-                  <div class="relative">
-                    <span class="absolute right-4 top-1/2 -translate-y-1/2 font-extrabold text-muted-foreground">months</span>
-                    <Input
-                      :id="field.name"
-                      class="rounded-xl border-white/10 bg-transparent pr-20 py-5 text-lg transition-all focus:ring-2 focus:ring-primary/40 focus:border-primary shadow-inner"
-                      type="number"
-                      :min="1"
-                      :step="1"
-                      :model-value="field.state.value"
-                      @input="onNumberInput(field, $event)"
-                      @blur="field.handleBlur"
-                    />
-                  </div>
                   <p class="min-h-4 text-xs font-medium text-red-500" :class="{ invisible: !(field.state.meta.isTouched && displayError(field.state.meta.errors)) }">
                     {{ displayError(field.state.meta.errors) || '-' }}
                   </p>
@@ -369,9 +372,22 @@ watch(formValues, (newVals) => {
               name="extraMonthlyPayment"
             >
               <template #default="{ field }">
-                <div class="space-y-4">
+                <div class="space-y-2">
                   <div class="flex items-center justify-between">
-                    <label class="block text-sm font-bold tracking-wide text-white" :for="field.name">Extra Monthly Payment (Optional)</label>
+                    <label class="block text-sm font-bold tracking-wide text-white" :for="field.name">Extra Payment</label>
+                    <div class="relative w-24 sm:w-32 flex items-center border-b border-white/20 focus-within:border-primary transition-colors pb-1">
+                      <span class="text-muted-foreground font-bold mr-2">$</span>
+                      <input
+                        :id="field.name"
+                        class="w-full bg-transparent border-none p-0 text-right text-lg font-bold text-white focus:ring-0 focus:outline-none"
+                        type="number"
+                        :min="0"
+                        step="1"
+                        :value="field.state.value"
+                        @input="onNumberInput(field, $event)"
+                        @blur="field.handleBlur"
+                      />
+                    </div>
                   </div>
                   <input
                     type="range"
@@ -379,23 +395,10 @@ watch(formValues, (newVals) => {
                     max="5000"
                     step="50"
                     :value="field.state.value"
-                    class="w-full cursor-pointer accent-teal-400"
+                    class="w-full cursor-pointer accent-teal-400 mt-2"
                     @input="onNumberInput(field, $event)"
                     @blur="field.handleBlur"
                   />
-                  <div class="relative">
-                    <span class="absolute left-4 top-1/2 -translate-y-1/2 font-extrabold text-muted-foreground">$</span>
-                    <Input
-                      :id="field.name"
-                      class="rounded-xl border-white/10 bg-transparent pl-8 py-5 text-lg transition-all focus:ring-2 focus:ring-primary/40 focus:border-primary shadow-inner"
-                      type="number"
-                      :min="0"
-                      step="1"
-                      :model-value="field.state.value"
-                      @input="onNumberInput(field, $event)"
-                      @blur="field.handleBlur"
-                    />
-                  </div>
                   <p class="min-h-4 text-xs font-medium text-red-500" :class="{ invisible: !(field.state.meta.isTouched && displayError(field.state.meta.errors)) }">
                     {{ displayError(field.state.meta.errors) || '-' }}
                   </p>
@@ -403,18 +406,33 @@ watch(formValues, (newVals) => {
               </template>
             </form.Field>
 
-            <div class="pt-4 border-t border-white/10">
-              <form.Subscribe :selector="(state) => ({ canSubmit: state.canSubmit, isSubmitting: state.isSubmitting })">
-                <template #default="{ canSubmit, isSubmitting }">
-                  <Button 
-                    class="w-full py-6 rounded-2xl text-base font-bold bg-[#1e1b4b] hover:bg-[#1e1b4b]/90 text-white shadow-sm transition-all"
-                    type="submit" 
-                    :disabled="!canSubmit || isSubmitting || isSaving"
-                  >
-                    {{ isSubmitting || isSaving ? 'Saving...' : 'Save Calculation' }}
-                  </Button>
-                </template>
-              </form.Subscribe>
+            <div class="pt-8 mt-4 border-t border-white/10 flex flex-col gap-6">
+              <div v-if="liveResult" class="flex items-center justify-between">
+                <span class="text-xl font-extrabold text-white tracking-tight">EMI</span>
+                <span class="text-2xl font-extrabold text-[#0ea5e9]">{{ currency(liveResult.monthlyPayment) }}</span>
+              </div>
+              <div class="flex items-center gap-4">
+                <form.Subscribe :selector="(state) => ({ canSubmit: state.canSubmit, isSubmitting: state.isSubmitting })">
+                  <template #default="{ canSubmit, isSubmitting }">
+                    <Button 
+                      class="flex-1 h-12 rounded-xl text-sm font-bold bg-[#1e1b4b] hover:bg-[#1e1b4b]/90 text-white shadow-sm transition-all"
+                      type="submit" 
+                      :disabled="!canSubmit || isSubmitting || isSaving"
+                    >
+                      {{ isSubmitting || isSaving ? 'Saving...' : 'Save result' }}
+                    </Button>
+                  </template>
+                </form.Subscribe>
+                <Button 
+                  v-if="liveResult"
+                  type="button" 
+                  variant="outline" 
+                  class="flex-1 h-12 rounded-xl text-sm font-bold bg-transparent border-white/20 text-white hover:bg-white/5 transition-all"
+                  @click="showReport = !showReport"
+                >
+                  {{ showReport ? 'Hide report' : 'View report' }}
+                </Button>
+              </div>
             </div>
           </form>
         </CardContent>
@@ -429,48 +447,54 @@ watch(formValues, (newVals) => {
               {{ isExportingPdf ? 'Generating PDF...' : 'Download PDF' }}
             </Button>
           </CardHeader>
-          <CardContent class="p-6 sm:p-8 space-y-8">
-            <div class="grid grid-cols-1 md:grid-cols-[auto_1fr] gap-8 items-center">
-              <div class="flex justify-center">
-                <DonutChart
-                  :data="[
-                    { label: 'Principal', value: formValues.principal, color: '#0ea5e9' },
-                    { label: 'Interest', value: liveResult.totalInterest, color: '#10b981' }
-                  ]"
-                  :size="240"
-                  :strokeWidth="32"
-                  centerLabel="Monthly Pay"
-                  :centerValue="currency(liveResult.monthlyPayment)"
-                />
-              </div>
-
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4" :class="{'sm:grid-cols-4': liveResult.interestSaved > 0}">
-                  <div class="bg-black/20 rounded-[1.5rem] p-6 border border-white/10" :class="liveResult.interestSaved > 0 ? 'sm:col-span-4' : 'sm:col-span-2'">
-                    <p class="text-sm font-semibold uppercase tracking-wider text-muted-foreground mb-2">Total Paid</p>
-                    <p class="text-4xl font-extrabold text-white">{{ currency(liveResult.totalPayment) }}</p>
+          <CardContent class="p-6 sm:p-8 flex flex-col items-center min-h-[500px]">
+            <div class="flex-1 flex flex-col items-center justify-center w-full">
+              <DonutChart
+                :data="[
+                  { label: 'Principal', value: formValues.principal, color: '#0ea5e9' },
+                  { label: 'Interest', value: liveResult.totalInterest, color: '#10b981' }
+                ]"
+                :size="320"
+                :strokeWidth="36"
+                centerLabel="Total amount"
+                :centerValue="currency(liveResult.totalPayment)"
+              />
+              
+              <div class="mt-12 flex flex-col gap-4 w-full max-w-xs text-sm font-semibold">
+                <div class="flex items-center justify-between">
+                  <div class="flex items-center gap-3">
+                    <div class="w-3 h-3 rounded-full bg-[#0ea5e9]"></div>
+                    <span class="text-slate-300">Principal amount</span>
                   </div>
-                  <div class="bg-black/20 rounded-xl p-5 border border-white/10" :class="liveResult.interestSaved > 0 ? 'sm:col-span-2' : ''">
-                    <p class="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-1">Total Principal</p>
-                    <p class="text-xl font-extrabold text-[#0ea5e9]">{{ currency(formValues.principal) }}</p>
-                  </div>
-                  <div class="bg-black/20 rounded-xl p-5 border border-white/10" :class="liveResult.interestSaved > 0 ? 'sm:col-span-2' : ''">
-                    <p class="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-1">Total Interest</p>
-                    <p class="text-xl font-extrabold text-[#10b981]">{{ currency(liveResult.totalInterest) }}</p>
-                  </div>
-                  <template v-if="liveResult.interestSaved > 0">
-                    <div class="bg-primary/20 rounded-xl p-5 border border-primary/30 sm:col-span-2">
-                      <p class="text-xs font-semibold uppercase tracking-wider text-primary mb-1">Interest Saved</p>
-                      <p class="text-xl font-extrabold text-white">{{ currency(liveResult.interestSaved) }}</p>
-                    </div>
-                    <div class="bg-primary/20 rounded-xl p-5 border border-primary/30 sm:col-span-2">
-                      <p class="text-xs font-semibold uppercase tracking-wider text-primary mb-1">Time Saved</p>
-                      <p class="text-xl font-extrabold text-white">{{ formValues.termMonths - liveResult.actualTermMonths }} months</p>
-                    </div>
-                  </template>
+                  <span class="text-white text-base">{{ currency(formValues.principal) }}</span>
                 </div>
+                <div class="flex items-center justify-between">
+                  <div class="flex items-center gap-3">
+                    <div class="w-3 h-3 rounded-full bg-[#10b981]"></div>
+                    <span class="text-slate-300">Total interest</span>
+                  </div>
+                  <span class="text-white text-base">{{ currency(liveResult.totalInterest) }}</span>
+                </div>
+                <template v-if="liveResult.interestSaved > 0">
+                  <div class="flex items-center justify-between pt-4 mt-2 border-t border-white/10">
+                    <div class="flex items-center gap-3">
+                      <div class="w-3 h-3 rounded-full bg-primary shadow-[0_0_8px_rgba(14,165,233,0.8)]"></div>
+                      <span class="text-primary">Interest saved</span>
+                    </div>
+                    <span class="text-white text-base">{{ currency(liveResult.interestSaved) }}</span>
+                  </div>
+                  <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                      <div class="w-3 h-3 rounded-full bg-primary shadow-[0_0_8px_rgba(14,165,233,0.8)]"></div>
+                      <span class="text-primary">Time saved</span>
+                    </div>
+                    <span class="text-white text-base">{{ formValues.termMonths - liveResult.actualTermMonths }} months</span>
+                  </div>
+                </template>
+              </div>
             </div>
 
-            <div class="mt-8">
+            <div v-if="showReport" class="w-full mt-12 animate-in slide-in-from-top-4 fade-in duration-300">
                <div class="flex items-center mb-4">
                  <h3 class="text-lg font-bold text-white">Amortization Schedule</h3>
                  <Tooltip text="A complete table of periodic loan payments, showing the amount of principal and the amount of interest that comprise each payment." />
