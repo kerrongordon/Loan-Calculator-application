@@ -6,7 +6,8 @@ export const loanCalculatorInputSchema = z.object({
     .number()
     .min(0, 'Interest rate cannot be negative.')
     .max(100, 'Interest rate cannot exceed 100%.'),
-  termMonths: z.coerce.number().int('Term must be a whole number.').positive('Term must be greater than 0.')
+  termMonths: z.coerce.number().int('Term must be a whole number.').positive('Term must be greater than 0.'),
+  extraMonthlyPayment: z.coerce.number().min(0).optional().default(0)
 })
 
 export const consolidationLoanSchema = z.object({
@@ -42,6 +43,8 @@ export const loanCalculationResultSchema = loanCalculatorInputSchema.extend({
   monthlyPayment: z.number(),
   totalPayment: z.number(),
   totalInterest: z.number(),
+  actualTermMonths: z.number().int(),
+  interestSaved: z.number(),
   amortization: z.array(amortizationRowSchema)
 })
 

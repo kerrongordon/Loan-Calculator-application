@@ -35,17 +35,19 @@ export const useLoanMath = () => {
     principal: number,
     annualRate: number,
     termMonths: number,
-    monthlyPayment: number
+    baseMonthlyPayment: number,
+    extraMonthlyPayment: number = 0
   ): AmortizationRow[] => {
     const rows: AmortizationRow[] = []
     const monthlyRate = annualRate / 100 / 12
     let balance = principal
+    let month = 1
 
-    for (let month = 1; month <= termMonths; month += 1) {
+    while (balance > 0 && month <= termMonths * 5) { // Cap at 5x term to prevent infinite loops in weird scenarios
       const interestPayment = monthlyRate === 0 ? 0 : balance * monthlyRate
-      let principalPayment = monthlyPayment - interestPayment
+      let principalPayment = baseMonthlyPayment - interestPayment + extraMonthlyPayment
 
-      if (month === termMonths || principalPayment > balance) {
+      if (principalPayment > balance) {
         principalPayment = balance
       }
 
@@ -59,6 +61,7 @@ export const useLoanMath = () => {
         interest: roundMoney(interestPayment),
         balance: Math.max(balance, 0)
       })
+      month++
     }
 
     return rows

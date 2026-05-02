@@ -1,5 +1,7 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+import { useClipboard } from '@vueuse/core'
 import { useForm } from '@tanstack/vue-form'
 import type { ConsolidationLoanInput } from '~~/shared/loan'
 import { consolidationInputSchema } from '~~/shared/loan'
@@ -10,6 +12,7 @@ import CardDescription from '~/components/ui/card/CardDescription.vue'
 import CardHeader from '~/components/ui/card/CardHeader.vue'
 import CardTitle from '~/components/ui/card/CardTitle.vue'
 import Input from '~/components/ui/input/Input.vue'
+import Tooltip from '~/components/ui/tooltip/Tooltip.vue'
 
 const {
   latestResult,
@@ -277,10 +280,37 @@ const applySuggestedTerm = (): void => {
 
 const errorFor = (path: string): string | undefined => fieldErrors.value[path]
 
+const route = useRoute()
+const router = useRouter()
+const { copy, copied } = useClipboard({ source: computed(() => window.location.href) })
+
 onMounted(() => {
   void loadHistory()
-  syncValidation()
+
+  // Pre-fill from URL
+  if (route.query.newTermMonths) form.setFieldValue('newTermMonths', Number(route.query.newTermMonths))
+  if (route.query.loans) {
+    try {
+      const decodedLoans = JSON.parse(decodeURIComponent(route.query.loans as string))
+      if (Array.isArray(decodedLoans) && decodedLoans.length >= 2) {
+        loans.value = decodedLoans
+      }
+    } catch (e) {
+      console.error('Failed to parse loans from URL')
+    }
+  }
 })
+
+// Sync form values to URL
+watch([formValues, loans], ([newFormVals, newLoans]) => {
+  router.replace({
+    query: {
+      ...route.query,
+      newTermMonths: newFormVals.newTermMonths,
+      loans: encodeURIComponent(JSON.stringify(newLoans))
+    }
+  })
+}, { deep: true })
 </script>
 
 <template>
@@ -290,11 +320,16 @@ onMounted(() => {
       
       <!-- LEFT: Calculator Form (40%) -->
       <Card class="bg-white/5 rounded-[2rem] shadow-sm border border-white/10 overflow-hidden backdrop-blur-xl">
-        <CardHeader class="border-b border-white/10 bg-white/5 pb-6 pt-6 px-6 sm:px-8">
-          <CardTitle class="text-xl font-extrabold text-white tracking-tight">Loan Consolidation</CardTitle>
-          <CardDescription class="text-muted-foreground text-sm mt-1">
-            Configure your scenario and add existing loans.
-          </CardDescription>
+        <CardHeader class="border-b border-white/10 bg-white/5 pb-6 pt-6 px-6 sm:px-8 flex flex-col sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <CardTitle class="text-xl font-extrabold text-white tracking-tight">Loan Consolidation</CardTitle>
+            <CardDescription class="text-muted-foreground text-sm mt-1">
+              Combine multiple loans into a single scenario to see your overall savings and new payment structure.
+            </CardDescription>
+          </div>
+          <Button type="button" variant="outline" class="h-9 px-4 rounded-full text-xs font-semibold bg-white/5 border-white/10 shadow-sm text-slate-300 mt-4 sm:mt-0" @click="copy()">
+            {{ copied ? 'Copied!' : 'Copy Link' }}
+          </Button>
         </CardHeader>
         <CardContent class="p-6 sm:p-8">
           <form class="space-y-8" @submit.prevent="form.handleSubmit">
@@ -435,7 +470,10 @@ onMounted(() => {
                   <p class="text-xl font-extrabold text-white">{{ currency(liveResult.totalConsolidatedPrincipal) }}</p>
                 </div>
                 <div class="bg-black/20 rounded-xl p-4 border border-white/10">
-                  <p class="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-1">Weighted Rate</p>
+                  <div class="flex items-center mb-1">
+                    <p class="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Weighted Rate</p>
+                    <Tooltip text="The blended average interest rate across all your combined loans, weighted by each loan's principal amount." />
+                  </div>
                   <p class="text-xl font-extrabold text-white">{{ percent(liveResult.weightedAverageInterestRate) }}</p>
                 </div>
                 <div class="bg-black/20 rounded-xl p-4 border border-white/10">
@@ -474,8 +512,11 @@ onMounted(() => {
               </div>
             </div>
 
-            <div>
-              <h3 class="text-lg font-bold text-white mb-4">Amortization Schedule</h3>
+            <div class="mt-8">
+              <div class="flex items-center mb-4">
+                <h3 class="text-lg font-bold text-white">Amortization Schedule</h3>
+                <Tooltip text="A complete table showing how the new consolidated loan balance will decrease over the chosen term." />
+              </div>
               <div class="bg-black/20 rounded-xl overflow-hidden border border-white/10 mb-6 p-4">
                 <AreaChart :data="liveResult.amortization" color="#10b981" class="h-48" />
               </div>

@@ -2,6 +2,7 @@
 import Button from '~/components/ui/button/Button.vue'
 
 const activeView = useState<'calculator' | 'consolidation'>('loan-ui/active-view', () => 'calculator')
+const { currencyCode } = useFormatters()
 </script>
 
 <template>
@@ -12,7 +13,20 @@ const activeView = useState<'calculator' | 'consolidation'>('loan-ui/active-view
     <div class="pointer-events-none absolute -bottom-40 left-1/4 h-[32rem] w-[32rem] rounded-full bg-teal-500/30 opacity-60 mix-blend-screen blur-[128px] animate-blob animation-delay-4000"></div>
 
     <div class="relative z-10 mx-auto flex w-full max-w-7xl flex-col gap-10">
-      <header class="flex flex-col items-center justify-center space-y-4 text-center">
+      <!-- Currency Switcher -->
+      <div class="absolute top-0 right-0 z-50">
+        <select v-model="currencyCode" class="appearance-none bg-white/5 backdrop-blur-md border border-white/10 text-white text-sm rounded-full px-4 py-1.5 outline-none hover:bg-white/10 transition-colors cursor-pointer pr-8">
+          <option value="USD" class="text-slate-900">USD ($)</option>
+          <option value="EUR" class="text-slate-900">EUR (€)</option>
+          <option value="GBP" class="text-slate-900">GBP (£)</option>
+          <option value="JPY" class="text-slate-900">JPY (¥)</option>
+        </select>
+        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-white">
+          <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" fill-rule="evenodd"></path></svg>
+        </div>
+      </div>
+
+      <header class="flex flex-col items-center justify-center space-y-4 text-center mt-8">
         <div class="inline-flex items-center rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-medium text-primary shadow-sm backdrop-blur-md">
           <span class="mr-2 flex h-2 w-2 rounded-full bg-primary shadow-[0_0_8px_rgba(14,165,233,0.8)]"></span>
           Loan Calculator Studio

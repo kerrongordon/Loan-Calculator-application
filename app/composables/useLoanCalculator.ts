@@ -23,16 +23,28 @@ export const useLoanCalculator = () => {
   const calculate = (rawInput: LoanCalculatorInput): LoanCalculationResult => {
     const input = loanCalculatorInputSchema.parse(rawInput)
     const totals = calculateTotals(input.principal, input.interestRate, input.termMonths)
+    
+    const extraPayment = input.extraMonthlyPayment || 0
     const amortization = buildAmortizationSchedule(
       input.principal,
       input.interestRate,
       input.termMonths,
-      totals.monthlyPayment
+      totals.monthlyPayment,
+      extraPayment
     )
+
+    const actualTermMonths = amortization.length
+    const actualTotalPayment = amortization.reduce((sum, row) => sum + row.payment, 0)
+    const actualTotalInterest = amortization.reduce((sum, row) => sum + row.interest, 0)
+    const interestSaved = totals.totalInterest - actualTotalInterest
 
     const result = loanCalculationResultSchema.parse({
       ...input,
-      ...totals,
+      monthlyPayment: totals.monthlyPayment,
+      totalPayment: actualTotalPayment,
+      totalInterest: actualTotalInterest,
+      actualTermMonths,
+      interestSaved: Math.max(0, interestSaved),
       amortization
     })
 

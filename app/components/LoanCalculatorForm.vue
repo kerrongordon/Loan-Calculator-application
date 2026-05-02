@@ -1,5 +1,7 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+import { useClipboard } from '@vueuse/core'
 import { useForm } from '@tanstack/vue-form'
 import { loanCalculatorInputSchema } from '~~/shared/loan'
 import Button from '~/components/ui/button/Button.vue'
@@ -9,6 +11,7 @@ import CardDescription from '~/components/ui/card/CardDescription.vue'
 import CardHeader from '~/components/ui/card/CardHeader.vue'
 import CardTitle from '~/components/ui/card/CardTitle.vue'
 import Input from '~/components/ui/input/Input.vue'
+import Tooltip from '~/components/ui/tooltip/Tooltip.vue'
 
 const {
   latestResult,
@@ -168,7 +171,8 @@ const form = useForm({
   defaultValues: {
     principal: 25000,
     interestRate: 6.5,
-    termMonths: 60
+    termMonths: 60,
+    extraMonthlyPayment: 0
   },
   onSubmit: async ({ value }) => {
     const parsed = loanCalculatorInputSchema.safeParse(value)
@@ -191,9 +195,32 @@ const liveResult = computed(() => {
   return parsed.success ? calculate(parsed.data) : null
 })
 
+const route = useRoute()
+const router = useRouter()
+const { copy, copied } = useClipboard({ source: computed(() => window.location.href) })
+
 onMounted(() => {
   void loadHistory()
+
+  // Pre-fill from URL
+  if (route.query.principal) form.setFieldValue('principal', Number(route.query.principal))
+  if (route.query.interestRate) form.setFieldValue('interestRate', Number(route.query.interestRate))
+  if (route.query.termMonths) form.setFieldValue('termMonths', Number(route.query.termMonths))
+  if (route.query.extraMonthlyPayment) form.setFieldValue('extraMonthlyPayment', Number(route.query.extraMonthlyPayment))
 })
+
+// Sync form values to URL
+watch(formValues, (newVals) => {
+  router.replace({
+    query: {
+      ...route.query,
+      principal: newVals.principal,
+      interestRate: newVals.interestRate,
+      termMonths: newVals.termMonths,
+      extraMonthlyPayment: newVals.extraMonthlyPayment > 0 ? newVals.extraMonthlyPayment : undefined
+    }
+  })
+}, { deep: true })
 </script>
 
 <template>
@@ -203,11 +230,16 @@ onMounted(() => {
       
       <!-- LEFT: Calculator Form (40%) -->
       <Card class="bg-white/5 rounded-[2rem] shadow-sm border border-white/10 overflow-hidden backdrop-blur-xl">
-        <CardHeader class="border-b border-white/10 bg-white/5 pb-6 pt-6 px-6 sm:px-8">
-          <CardTitle class="text-xl font-extrabold text-white tracking-tight">Loan Calculator</CardTitle>
-          <CardDescription class="text-muted-foreground text-sm mt-1">
-            Configure parameters to compute payment details and amortization.
-          </CardDescription>
+        <CardHeader class="border-b border-white/10 bg-white/5 pb-6 pt-6 px-6 sm:px-8 flex flex-col sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <CardTitle class="text-xl font-extrabold text-white tracking-tight">Loan Calculator</CardTitle>
+            <CardDescription class="text-muted-foreground text-sm mt-1">
+              Configure parameters to compute payment details and amortization.
+            </CardDescription>
+          </div>
+          <Button type="button" variant="outline" class="h-9 px-4 rounded-full text-xs font-semibold bg-white/5 border-white/10 shadow-sm text-slate-300 mt-4 sm:mt-0" @click="copy()">
+            {{ copied ? 'Copied!' : 'Copy Link' }}
+          </Button>
         </CardHeader>
         <CardContent class="p-6 sm:p-8">
           <form class="space-y-8" @submit.prevent="form.handleSubmit">
@@ -217,7 +249,10 @@ onMounted(() => {
             >
               <template #default="{ field }">
                 <div class="space-y-4">
-                  <label class="block text-sm font-bold tracking-wide text-white" :for="field.name">Principal & Interest ($)</label>
+                  <div class="flex items-center">
+                    <label class="block text-sm font-bold tracking-wide text-white" :for="field.name">Principal & Interest ($)</label>
+                    <Tooltip text="The total initial amount borrowed, which accrues interest over time." />
+                  </div>
                   <input
                     type="range"
                     min="1000"
@@ -255,7 +290,10 @@ onMounted(() => {
               <template #default="{ field }">
                 <div class="space-y-4">
                   <div class="flex items-center justify-between">
-                    <label class="block text-sm font-bold tracking-wide text-white" :for="field.name">Mortgage Interest Rate</label>
+                    <div class="flex items-center">
+                      <label class="block text-sm font-bold tracking-wide text-white" :for="field.name">Mortgage Interest Rate</label>
+                      <Tooltip text="The annual percentage rate (APR) charged for borrowing the money." />
+                    </div>
                   </div>
                   <input
                     type="range"
@@ -327,6 +365,44 @@ onMounted(() => {
               </template>
             </form.Field>
 
+            <form.Field
+              name="extraMonthlyPayment"
+            >
+              <template #default="{ field }">
+                <div class="space-y-4">
+                  <div class="flex items-center justify-between">
+                    <label class="block text-sm font-bold tracking-wide text-white" :for="field.name">Extra Monthly Payment (Optional)</label>
+                  </div>
+                  <input
+                    type="range"
+                    min="0"
+                    max="5000"
+                    step="50"
+                    :value="field.state.value"
+                    class="w-full cursor-pointer accent-teal-400"
+                    @input="onNumberInput(field, $event)"
+                    @blur="field.handleBlur"
+                  />
+                  <div class="relative">
+                    <span class="absolute left-4 top-1/2 -translate-y-1/2 font-extrabold text-muted-foreground">$</span>
+                    <Input
+                      :id="field.name"
+                      class="rounded-xl border-white/10 bg-transparent pl-8 py-5 text-lg transition-all focus:ring-2 focus:ring-primary/40 focus:border-primary shadow-inner"
+                      type="number"
+                      :min="0"
+                      step="1"
+                      :model-value="field.state.value"
+                      @input="onNumberInput(field, $event)"
+                      @blur="field.handleBlur"
+                    />
+                  </div>
+                  <p class="min-h-4 text-xs font-medium text-red-500" :class="{ invisible: !(field.state.meta.isTouched && displayError(field.state.meta.errors)) }">
+                    {{ displayError(field.state.meta.errors) || '-' }}
+                  </p>
+                </div>
+              </template>
+            </form.Field>
+
             <div class="pt-4 border-t border-white/10">
               <form.Subscribe :selector="(state) => ({ canSubmit: state.canSubmit, isSubmitting: state.isSubmitting })">
                 <template #default="{ canSubmit, isSubmitting }">
@@ -368,24 +444,37 @@ onMounted(() => {
                 />
               </div>
 
-              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div class="bg-black/20 rounded-[1.5rem] p-6 border border-white/10 sm:col-span-2">
-                  <p class="text-sm font-semibold uppercase tracking-wider text-muted-foreground mb-2">Total Paid</p>
-                  <p class="text-4xl font-extrabold text-white">{{ currency(liveResult.totalPayment) }}</p>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4" :class="{'sm:grid-cols-4': liveResult.interestSaved > 0}">
+                  <div class="bg-black/20 rounded-[1.5rem] p-6 border border-white/10" :class="liveResult.interestSaved > 0 ? 'sm:col-span-4' : 'sm:col-span-2'">
+                    <p class="text-sm font-semibold uppercase tracking-wider text-muted-foreground mb-2">Total Paid</p>
+                    <p class="text-4xl font-extrabold text-white">{{ currency(liveResult.totalPayment) }}</p>
+                  </div>
+                  <div class="bg-black/20 rounded-xl p-5 border border-white/10" :class="liveResult.interestSaved > 0 ? 'sm:col-span-2' : ''">
+                    <p class="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-1">Total Principal</p>
+                    <p class="text-xl font-extrabold text-[#0ea5e9]">{{ currency(formValues.principal) }}</p>
+                  </div>
+                  <div class="bg-black/20 rounded-xl p-5 border border-white/10" :class="liveResult.interestSaved > 0 ? 'sm:col-span-2' : ''">
+                    <p class="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-1">Total Interest</p>
+                    <p class="text-xl font-extrabold text-[#10b981]">{{ currency(liveResult.totalInterest) }}</p>
+                  </div>
+                  <template v-if="liveResult.interestSaved > 0">
+                    <div class="bg-primary/20 rounded-xl p-5 border border-primary/30 sm:col-span-2">
+                      <p class="text-xs font-semibold uppercase tracking-wider text-primary mb-1">Interest Saved</p>
+                      <p class="text-xl font-extrabold text-white">{{ currency(liveResult.interestSaved) }}</p>
+                    </div>
+                    <div class="bg-primary/20 rounded-xl p-5 border border-primary/30 sm:col-span-2">
+                      <p class="text-xs font-semibold uppercase tracking-wider text-primary mb-1">Time Saved</p>
+                      <p class="text-xl font-extrabold text-white">{{ formValues.termMonths - liveResult.actualTermMonths }} months</p>
+                    </div>
+                  </template>
                 </div>
-                <div class="bg-black/20 rounded-xl p-5 border border-white/10">
-                  <p class="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-1">Total Principal</p>
-                  <p class="text-xl font-extrabold text-[#0ea5e9]">{{ currency(formValues.principal) }}</p>
-                </div>
-                <div class="bg-black/20 rounded-xl p-5 border border-white/10">
-                  <p class="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-1">Total Interest</p>
-                  <p class="text-xl font-extrabold text-[#10b981]">{{ currency(liveResult.totalInterest) }}</p>
-                </div>
-              </div>
             </div>
 
             <div class="mt-8">
-               <h3 class="text-lg font-bold text-white mb-4">Amortization Schedule</h3>
+               <div class="flex items-center mb-4">
+                 <h3 class="text-lg font-bold text-white">Amortization Schedule</h3>
+                 <Tooltip text="A complete table of periodic loan payments, showing the amount of principal and the amount of interest that comprise each payment." />
+               </div>
                <div class="bg-black/20 rounded-xl overflow-hidden border border-white/10 mb-6 p-4">
                  <AreaChart :data="liveResult.amortization" color="#0ea5e9" class="h-48" />
                </div>
