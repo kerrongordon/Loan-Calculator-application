@@ -24,6 +24,7 @@ const {
 } = useLoanCalculator()
 const { currency } = useFormatters()
 const { exportRowsAsCsv, exportRowsAsXlsx } = useHistoryExport()
+const { isExportingPdf, pdfExportError, downloadPdf } = usePdfExport()
 
 const principalRule = loanCalculatorInputSchema.shape.principal
 const interestRateRule = loanCalculatorInputSchema.shape.interestRate
@@ -345,9 +346,12 @@ onMounted(() => {
 
       <!-- RIGHT: Live Preview (60%) -->
       <div class="flex flex-col gap-6" v-if="liveResult">
-        <Card class="bg-white/5 rounded-[2rem] shadow-sm border border-white/10 overflow-hidden backdrop-blur-xl">
-          <CardHeader class="border-b border-white/10 bg-white/5 pb-6 pt-6 px-6 sm:px-8">
+        <Card id="calculator-live-preview" class="bg-white/5 rounded-[2rem] shadow-sm border border-white/10 overflow-hidden backdrop-blur-xl">
+          <CardHeader class="border-b border-white/10 bg-white/5 flex flex-col sm:flex-row sm:items-center sm:justify-between pb-6 pt-6 px-6 sm:px-8">
             <CardTitle class="text-xl font-extrabold text-white tracking-tight">Live Calculation Preview</CardTitle>
+            <Button type="button" variant="outline" class="h-9 px-4 rounded-full text-xs font-semibold bg-white/5 border-white/10 shadow-sm text-slate-300 mt-4 sm:mt-0" :disabled="isExportingPdf" @click="downloadPdf('calculator-live-preview', 'loan-calculation-summary.pdf')">
+              {{ isExportingPdf ? 'Generating PDF...' : 'Download PDF' }}
+            </Button>
           </CardHeader>
           <CardContent class="p-6 sm:p-8 space-y-8">
             <div class="grid grid-cols-1 md:grid-cols-[auto_1fr] gap-8 items-center">
@@ -380,8 +384,11 @@ onMounted(() => {
               </div>
             </div>
 
-            <div>
+            <div class="mt-8">
                <h3 class="text-lg font-bold text-white mb-4">Amortization Schedule</h3>
+               <div class="bg-black/20 rounded-xl overflow-hidden border border-white/10 mb-6 p-4">
+                 <AreaChart :data="liveResult.amortization" color="#0ea5e9" class="h-48" />
+               </div>
                <div class="bg-black/20 rounded-xl overflow-hidden border border-white/10">
                  <AmortizationTable :rows="liveResult.amortization" />
                </div>

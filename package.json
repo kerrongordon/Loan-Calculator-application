@@ -14,6 +14,8 @@
     "@tanstack/vue-form": "^1.29.1",
     "@vueuse/core": "^14.3.0",
     "drizzle-orm": "^0.45.2",
+    "html2canvas": "^1.4.1",
+    "jspdf": "^4.2.1",
     "nuxt": "^4.4.4",
     "pg": "^8.20.0",
     "vue": "^3.5.33",

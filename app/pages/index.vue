@@ -54,10 +54,12 @@ const activeView = useState<'calculator' | 'consolidation'>('loan-ui/active-view
         </div>
       </section>
 
-      <div class="transition-all duration-500 ease-in-out">
-        <LoanCalculatorForm v-if="activeView === 'calculator'" />
-        <LoanConsolidationForm v-else />
-      </div>
+      <Transition name="fade-slide" mode="out-in">
+        <div :key="activeView" class="transition-all duration-500 ease-in-out">
+          <LoanCalculatorForm v-if="activeView === 'calculator'" />
+          <LoanConsolidationForm v-else />
+        </div>
+      </Transition>
     </div>
   </main>
 </template>
