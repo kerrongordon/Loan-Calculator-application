@@ -71,9 +71,9 @@ const areaD = computed(() => {
       </defs>
       
       <!-- Grid Lines -->
-      <line :x1="padding" :y1="padding" :x2="viewBoxWidth - padding" :y2="padding" stroke="rgba(255,255,255,0.05)" stroke-dasharray="4" />
-      <line :x1="padding" :y1="padding + (viewBoxHeight - padding * 2) / 2" :x2="viewBoxWidth - padding" :y2="padding + (viewBoxHeight - padding * 2) / 2" stroke="rgba(255,255,255,0.05)" stroke-dasharray="4" />
-      <line :x1="padding" :y1="viewBoxHeight - padding" :x2="viewBoxWidth - padding" :y2="viewBoxHeight - padding" stroke="rgba(255,255,255,0.1)" />
+      <line :x1="padding" :y1="padding" :x2="viewBoxWidth - padding" :y2="padding" stroke="rgba(0,0,0,0.05)" stroke-dasharray="4" />
+      <line :x1="padding" :y1="padding + (viewBoxHeight - padding * 2) / 2" :x2="viewBoxWidth - padding" :y2="padding + (viewBoxHeight - padding * 2) / 2" stroke="rgba(0,0,0,0.05)" stroke-dasharray="4" />
+      <line :x1="padding" :y1="viewBoxHeight - padding" :x2="viewBoxWidth - padding" :y2="viewBoxHeight - padding" stroke="rgba(0,0,0,0.1)" />
 
       <!-- Area Fill -->
       <path :d="areaD" fill="url(#areaGradient)" class="transition-all duration-500 ease-in-out" />

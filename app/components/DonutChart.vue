@@ -45,14 +45,14 @@ const segments = computed(() => {
 
 <template>
   <div class="relative inline-flex items-center justify-center flex-col" :style="{ width: `${size}px`, height: `${size}px` }">
-    <svg :width="size" :height="size" :viewBox="`0 0 ${size} ${size}`" class="transform -rotate-90 drop-shadow-md">
+    <svg :width="size" :height="size" :viewBox="`0 0 ${size} ${size}`" class="transform -rotate-90">
       <circle
         v-if="total === 0"
         :cx="center"
         :cy="center"
         :r="radius"
         fill="transparent"
-        class="stroke-border/50"
+        class="stroke-border"
         :stroke-width="strokeWidth"
       />
       
@@ -67,12 +67,13 @@ const segments = computed(() => {
         :stroke-width="strokeWidth"
         :stroke-dasharray="segment.dasharray"
         :stroke-dashoffset="segment.dashoffset"
+        stroke-linecap="round"
         class="transition-all duration-1000 ease-out"
       />
     </svg>
     <div v-if="centerLabel || centerValue" class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none text-center p-4">
-      <span v-if="centerLabel" class="text-xs font-semibold uppercase tracking-wider text-muted-foreground">{{ centerLabel }}</span>
-      <span v-if="centerValue" class="text-lg font-black text-foreground truncate max-w-[80%]">{{ centerValue }}</span>
+      <span v-if="centerLabel" class="text-xs font-medium tracking-wider text-muted-foreground">{{ centerLabel }}</span>
+      <span v-if="centerValue" class="text-xl sm:text-2xl font-black text-foreground truncate max-w-[75%]">{{ centerValue }}</span>
     </div>
   </div>
 </template>

@@ -6,70 +6,64 @@ const { currencyCode } = useFormatters()
 </script>
 
 <template>
-  <main class="min-h-screen bg-background relative overflow-hidden px-4 py-16 selection:bg-primary/20">
-    <!-- Glowing Background Blobs -->
-    <div class="pointer-events-none absolute -top-40 left-0 h-[32rem] w-[32rem] rounded-full bg-primary/30 opacity-60 mix-blend-screen blur-[128px] animate-blob"></div>
-    <div class="pointer-events-none absolute right-0 top-20 h-[32rem] w-[32rem] rounded-full bg-purple-600/30 opacity-60 mix-blend-screen blur-[128px] animate-blob animation-delay-2000"></div>
-    <div class="pointer-events-none absolute -bottom-40 left-1/4 h-[32rem] w-[32rem] rounded-full bg-teal-500/30 opacity-60 mix-blend-screen blur-[128px] animate-blob animation-delay-4000"></div>
+  <main class="min-h-screen bg-background px-4 py-10 sm:py-16 selection:bg-primary/20">
+    <div class="mx-auto flex w-full max-w-6xl flex-col gap-8">
 
-    <div class="relative z-10 mx-auto flex w-full max-w-7xl flex-col gap-10">
-      <!-- Currency Switcher -->
-      <div class="absolute top-0 right-0 z-50">
-        <select v-model="currencyCode" class="appearance-none bg-white/5 backdrop-blur-md border border-white/10 text-white text-sm rounded-full px-4 py-1.5 outline-none hover:bg-white/10 transition-colors cursor-pointer pr-8">
-          <option value="USD" class="text-slate-900">USD ($)</option>
-          <option value="EUR" class="text-slate-900">EUR (€)</option>
-          <option value="GBP" class="text-slate-900">GBP (£)</option>
-          <option value="JPY" class="text-slate-900">JPY (¥)</option>
-        </select>
-        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-white">
-          <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" fill-rule="evenodd"></path></svg>
+      <!-- Top Bar: Title + Currency -->
+      <div class="flex items-center justify-between">
+        <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground">
+          Loan calculator
+        </h1>
+        <div class="relative">
+          <select v-model="currencyCode" class="appearance-none bg-white border border-border text-foreground text-sm rounded-xl px-4 py-2 outline-none hover:border-primary/50 transition-colors cursor-pointer pr-8 shadow-card">
+            <option value="USD">USD ($)</option>
+            <option value="EUR">EUR (€)</option>
+            <option value="GBP">GBP (£)</option>
+            <option value="JPY">JPY (¥)</option>
+          </select>
+          <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-muted-foreground">
+            <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" fill-rule="evenodd"></path></svg>
+          </div>
         </div>
       </div>
 
-      <header class="flex flex-col items-center justify-center space-y-4 text-center mt-8">
-        <div class="inline-flex items-center rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-medium text-primary shadow-sm backdrop-blur-md">
-          <span class="mr-2 flex h-2 w-2 rounded-full bg-primary shadow-[0_0_8px_rgba(14,165,233,0.8)]"></span>
-          Loan Calculator Studio
-        </div>
-        <h1 class="text-4xl font-extrabold tracking-tight text-foreground sm:text-5xl lg:text-6xl drop-shadow-sm">
-          Smarter <span class="text-transparent bg-clip-text bg-gradient-to-r from-primary to-accent">Financing</span>
-        </h1>
-        <p class="max-w-2xl text-base text-muted-foreground sm:text-lg">
-          Calculate standard loan payments, review amortization schedules, and evaluate consolidation scenarios in a single, refined interface.
-        </p>
-      </header>
-
-      <section class="mx-auto flex justify-center">
-        <div class="inline-flex rounded-full border border-white/10 bg-white/5 p-1 shadow-sm backdrop-blur-xl">
-          <button
-            type="button"
-            class="relative rounded-full px-6 py-2.5 text-sm font-medium transition-all duration-300"
-            :class="[
-              activeView === 'calculator'
-                ? 'bg-primary text-white shadow-float'
-                : 'text-muted-foreground hover:text-foreground'
-            ]"
-            @click="activeView = 'calculator'"
-          >
+      <!-- Tab Navigation -->
+      <nav class="flex items-center gap-1 border-b border-border">
+        <button
+          type="button"
+          class="relative px-5 py-3 text-sm font-semibold transition-all duration-200"
+          :class="[
+            activeView === 'calculator'
+              ? 'text-primary border-b-2 border-primary'
+              : 'text-muted-foreground hover:text-foreground'
+          ]"
+          @click="activeView = 'calculator'"
+        >
+          <span class="flex items-center gap-2">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
             Loan Calculator
-          </button>
-          <button
-            type="button"
-            class="relative rounded-full px-6 py-2.5 text-sm font-medium transition-all duration-300"
-            :class="[
-              activeView === 'consolidation'
-                ? 'bg-primary text-white shadow-float'
-                : 'text-muted-foreground hover:text-foreground'
-            ]"
-            @click="activeView = 'consolidation'"
-          >
-            Loan Consolidation
-          </button>
-        </div>
-      </section>
+          </span>
+        </button>
+        <button
+          type="button"
+          class="relative px-5 py-3 text-sm font-semibold transition-all duration-200"
+          :class="[
+            activeView === 'consolidation'
+              ? 'text-primary border-b-2 border-primary'
+              : 'text-muted-foreground hover:text-foreground'
+          ]"
+          @click="activeView = 'consolidation'"
+        >
+          <span class="flex items-center gap-2">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+            Consolidation
+          </span>
+        </button>
+      </nav>
 
+      <!-- Content -->
       <Transition name="fade-slide" mode="out-in">
-        <div :key="activeView" class="transition-all duration-500 ease-in-out">
+        <div :key="activeView">
           <LoanCalculatorForm v-if="activeView === 'calculator'" />
           <LoanConsolidationForm v-else />
         </div>

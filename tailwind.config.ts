@@ -12,18 +12,19 @@ export default {
         sans: ['"Plus Jakarta Sans"', 'sans-serif'],
       },
       colors: {
-        background: '#020617', // slate-950
-        foreground: '#f8fafc', // slate-50
-        border: 'rgba(255, 255, 255, 0.1)', // highly transparent border
-        primary: '#0ea5e9',    // Electric Blue
+        background: '#f0f4f8',
+        foreground: '#1e293b',       // slate-800
+        border: '#e2e8f0',           // slate-200
+        primary: '#00c6fb',          // Vibrant cyan
         'primary-foreground': '#ffffff',
-        accent: '#0284c7',     // Deeper Electric Blue for hovers
-        muted: 'rgba(255, 255, 255, 0.05)',
-        'muted-foreground': '#94a3b8' // slate-400
+        accent: '#ff6b35',           // Warm orange (for charts)
+        muted: '#f1f5f9',            // slate-100
+        'muted-foreground': '#64748b' // slate-500
       },
       boxShadow: {
-        'soft': '0 4px 40px -2px rgba(0, 0, 0, 0.2)',
-        'float': '0 10px 40px -10px rgba(14, 165, 233, 0.3)',
+        'card': '0 1px 3px rgba(0,0,0,0.04), 0 6px 24px rgba(0,0,0,0.06)',
+        'card-hover': '0 4px 12px rgba(0,0,0,0.08), 0 12px 40px rgba(0,0,0,0.08)',
+        'float': '0 10px 40px -10px rgba(0, 198, 251, 0.25)',
       }
     }
   },
