@@ -1,21 +1,28 @@
 <script setup lang="ts">
-import Button from '~/components/ui/button/Button.vue'
+useHead({
+  title: 'Loan Calculator — Free Payment & Amortization Tool',
+  meta: [
+    { name: 'description', content: 'Free online loan calculator with amortization schedules, loan consolidation, and multi-currency support. Calculate monthly payments, total interest, and export results.' },
+    { property: 'og:title', content: 'LoanCalc — Free Loan Calculator & Consolidation Tool' },
+    { property: 'og:description', content: 'Calculate monthly loan payments, compare consolidation savings, and view full amortization schedules — all for free.' },
+    { property: 'og:type', content: 'website' },
+  ],
+})
 
 const activeView = useState<'calculator' | 'consolidation'>('loan-ui/active-view', () => 'calculator')
 const { currencyCode } = useFormatters()
 </script>
 
 <template>
-  <main class="min-h-screen bg-background px-4 py-10 sm:py-16 selection:bg-primary/20">
+  <div class="px-4 py-10 sm:py-16 selection:bg-primary/20">
     <div class="mx-auto flex w-full max-w-6xl flex-col gap-8">
 
-      <!-- Top Bar: Title + Controls -->
+      <!-- Top Bar: Title + Currency -->
       <div class="flex items-center justify-between">
         <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground">
           Loan calculator
         </h1>
         <div class="flex items-center gap-3">
-          <ThemeSwitcher />
           <div class="relative">
             <select v-model="currencyCode" class="appearance-none bg-card border border-border text-foreground text-sm rounded-xl px-4 py-2 outline-none hover:border-primary/50 transition-colors cursor-pointer pr-8 shadow-card">
               <option value="USD">USD ($)</option>
@@ -64,6 +71,9 @@ const { currencyCode } = useFormatters()
         </button>
       </nav>
 
+      <!-- Ad Banner — Top -->
+      <AdBanner ad-slot="top-banner" ad-format="horizontal" />
+
       <!-- Content -->
       <Transition name="fade-slide" mode="out-in">
         <div :key="activeView">
@@ -71,6 +81,9 @@ const { currencyCode } = useFormatters()
           <LoanConsolidationForm v-else />
         </div>
       </Transition>
+
+      <!-- Ad Banner — Bottom -->
+      <AdBanner ad-slot="bottom-banner" ad-format="auto" />
     </div>
-  </main>
+  </div>
 </template>

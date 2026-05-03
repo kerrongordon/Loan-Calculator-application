@@ -11,6 +11,7 @@
     "db:push": "drizzle-kit push"
   },
   "dependencies": {
+    "@nuxtjs/sitemap": "^8.0.15",
     "@tanstack/vue-form": "^1.29.1",
     "@vueuse/core": "^14.3.0",
     "drizzle-orm": "^0.45.2",
