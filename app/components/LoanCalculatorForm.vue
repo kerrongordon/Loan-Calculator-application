@@ -512,7 +512,7 @@ watch(formValues, (newVals) => {
           </div>
         </div>
         <div class="bg-muted rounded-xl overflow-hidden border border-border mb-6 p-4">
-          <AreaChart :data="liveResult.amortization" color="#00c6fb" class="h-48" />
+          <AreaChart :data="liveResult.amortization" color="#00c6fb" class="h-80" />
         </div>
         <div class="bg-muted rounded-xl overflow-hidden border border-border">
           <AmortizationTable :rows="liveResult.amortization" />

@@ -140,7 +140,7 @@ const formatCompact = (n: number): string => {
     </div>
 
     <!-- Chart -->
-    <div class="w-full min-h-[200px]">
+    <div class="w-full min-h-[20rem]">
       <svg :viewBox="`0 0 ${viewBoxWidth} ${viewBoxHeight}`" class="w-full h-full" preserveAspectRatio="none">
         <defs>
           <linearGradient v-for="s in series" :key="`grad-${s.key}`" :id="`areaGrad-${s.key}`" x1="0" y1="0" x2="0" y2="1">
@@ -169,7 +169,7 @@ const formatCompact = (n: number): string => {
           :y="label.y + 4"
           text-anchor="end"
           class="fill-muted-foreground"
-          font-size="18"
+          font-size="14"
           font-weight="500"
         >
           {{ label.label }}
@@ -183,7 +183,7 @@ const formatCompact = (n: number): string => {
           :y="viewBoxHeight - 4"
           text-anchor="middle"
           class="fill-muted-foreground"
-          font-size="18"
+          font-size="14"
           font-weight="500"
         >
           {{ label.month }}
