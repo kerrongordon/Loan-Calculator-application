@@ -222,7 +222,7 @@ watch(formValues, (newVals) => {
 <template>
   <div class="space-y-8">
     <!-- Main Calculator Card -->
-    <div class="bg-white rounded-2xl shadow-card overflow-hidden">
+    <div class="bg-card rounded-2xl shadow-card overflow-hidden">
       <div class="grid grid-cols-1 lg:grid-cols-2">
 
         <!-- LEFT: Form Inputs -->
@@ -416,7 +416,7 @@ watch(formValues, (newVals) => {
                 v-if="liveResult"
                 type="button" 
                 variant="outline" 
-                class="flex-1 h-11 rounded-xl text-sm font-bold bg-white border-border text-foreground hover:bg-muted transition-all"
+                class="flex-1 h-11 rounded-xl text-sm font-bold bg-card border-border text-foreground hover:bg-muted transition-all"
                 @click="showReport = !showReport"
               >
                 {{ showReport ? 'Hide report' : 'View report' }}
@@ -424,7 +424,7 @@ watch(formValues, (newVals) => {
               <Button 
                 type="button" 
                 variant="outline" 
-                class="h-11 rounded-xl text-xs font-semibold bg-white border-border text-muted-foreground hover:bg-muted transition-all px-4"
+                class="h-11 rounded-xl text-xs font-semibold bg-card border-border text-muted-foreground hover:bg-muted transition-all px-4"
                 @click="copy()"
               >
                 {{ copied ? '✓ Copied' : 'Share' }}
@@ -434,7 +434,7 @@ watch(formValues, (newVals) => {
         </div>
 
         <!-- RIGHT: Donut Chart + Legend -->
-        <div class="p-8 sm:p-10 flex flex-col items-center justify-center min-h-[480px] bg-white" v-if="liveResult" id="calculator-live-preview">
+        <div class="p-8 sm:p-10 flex flex-col items-center justify-center min-h-[480px] bg-card" v-if="liveResult" id="calculator-live-preview">
           <!-- PDF Download -->
           <div class="self-end mb-4" data-html2canvas-ignore="true">
             <button 
@@ -504,7 +504,7 @@ watch(formValues, (newVals) => {
 
     <!-- Amortization Report (toggleable) -->
     <Transition name="fade-slide" mode="out-in">
-      <div v-if="showReport && liveResult" class="bg-white rounded-2xl shadow-card overflow-hidden p-8 sm:p-10">
+      <div v-if="showReport && liveResult" class="bg-card rounded-2xl shadow-card overflow-hidden p-8 sm:p-10">
         <div class="flex items-center justify-between mb-6">
           <div class="flex items-center gap-2">
             <h3 class="text-lg font-bold text-foreground">Amortization Schedule</h3>
@@ -521,7 +521,7 @@ watch(formValues, (newVals) => {
     </Transition>
 
     <!-- History -->
-    <div class="bg-white rounded-2xl shadow-card overflow-hidden">
+    <div class="bg-card rounded-2xl shadow-card overflow-hidden">
       <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between p-6 sm:p-8 border-b border-border">
         <h2 class="text-lg font-bold text-foreground">Calculation History</h2>
         <div class="flex flex-wrap gap-3 mt-4 sm:mt-0">
@@ -545,7 +545,7 @@ watch(formValues, (newVals) => {
           <details
             v-for="item in history"
             :key="item.id"
-            class="group overflow-hidden rounded-xl border border-border bg-white transition-all hover:shadow-card-hover"
+            class="group overflow-hidden rounded-xl border border-border bg-card transition-all hover:shadow-card-hover"
           >
             <summary class="cursor-pointer list-none p-5 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/50">
               <div class="flex flex-wrap items-center justify-between gap-4">

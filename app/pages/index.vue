@@ -9,20 +9,23 @@ const { currencyCode } = useFormatters()
   <main class="min-h-screen bg-background px-4 py-10 sm:py-16 selection:bg-primary/20">
     <div class="mx-auto flex w-full max-w-6xl flex-col gap-8">
 
-      <!-- Top Bar: Title + Currency -->
+      <!-- Top Bar: Title + Controls -->
       <div class="flex items-center justify-between">
         <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground">
           Loan calculator
         </h1>
-        <div class="relative">
-          <select v-model="currencyCode" class="appearance-none bg-white border border-border text-foreground text-sm rounded-xl px-4 py-2 outline-none hover:border-primary/50 transition-colors cursor-pointer pr-8 shadow-card">
-            <option value="USD">USD ($)</option>
-            <option value="EUR">EUR (€)</option>
-            <option value="GBP">GBP (£)</option>
-            <option value="JPY">JPY (¥)</option>
-          </select>
-          <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-muted-foreground">
-            <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" fill-rule="evenodd"></path></svg>
+        <div class="flex items-center gap-3">
+          <ThemeSwitcher />
+          <div class="relative">
+            <select v-model="currencyCode" class="appearance-none bg-card border border-border text-foreground text-sm rounded-xl px-4 py-2 outline-none hover:border-primary/50 transition-colors cursor-pointer pr-8 shadow-card">
+              <option value="USD">USD ($)</option>
+              <option value="EUR">EUR (€)</option>
+              <option value="GBP">GBP (£)</option>
+              <option value="JPY">JPY (¥)</option>
+            </select>
+            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-muted-foreground">
+              <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" fill-rule="evenodd"></path></svg>
+            </div>
           </div>
         </div>
       </div>

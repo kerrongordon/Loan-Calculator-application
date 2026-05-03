@@ -4,8 +4,38 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ─── Light Theme (default) ─── */
 :root {
   color-scheme: light;
+  --color-background: #f0f4f8;
+  --color-foreground: #1e293b;
+  --color-border: #e2e8f0;
+  --color-primary: #00c6fb;
+  --color-accent: #ff6b35;
+  --color-muted: #f1f5f9;
+  --color-muted-foreground: #64748b;
+  --color-card: #ffffff;
+  --shadow-card: 0 1px 3px rgba(0,0,0,0.04), 0 6px 24px rgba(0,0,0,0.06);
+  --shadow-card-hover: 0 4px 12px rgba(0,0,0,0.08), 0 12px 40px rgba(0,0,0,0.08);
+  --chart-grid: rgba(0,0,0,0.06);
+  --slider-thumb-bg: #ffffff;
+}
+
+/* ─── Dark Theme ─── */
+.dark {
+  color-scheme: dark;
+  --color-background: #0f172a;
+  --color-foreground: #f1f5f9;
+  --color-border: rgba(255,255,255,0.1);
+  --color-primary: #00c6fb;
+  --color-accent: #ff6b35;
+  --color-muted: rgba(255,255,255,0.05);
+  --color-muted-foreground: #94a3b8;
+  --color-card: rgba(255,255,255,0.05);
+  --shadow-card: 0 1px 3px rgba(0,0,0,0.2), 0 6px 24px rgba(0,0,0,0.3);
+  --shadow-card-hover: 0 4px 12px rgba(0,0,0,0.3), 0 12px 40px rgba(0,0,0,0.4);
+  --chart-grid: rgba(255,255,255,0.06);
+  --slider-thumb-bg: #1e293b;
 }
 
 html {
@@ -14,6 +44,7 @@ html {
 
 body {
   @apply bg-background text-foreground antialiased overflow-x-hidden;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 /* Custom range slider — cyan gradient track */
@@ -34,7 +65,7 @@ input[type='range']::-webkit-slider-thumb {
   width: 20px;
   height: 20px;
   border-radius: 50%;
-  background: #ffffff;
+  background: var(--slider-thumb-bg);
   border: 3px solid #00c6fb;
   box-shadow: 0 2px 8px rgba(0, 198, 251, 0.3);
   cursor: pointer;
@@ -50,7 +81,7 @@ input[type='range']::-moz-range-thumb {
   width: 20px;
   height: 20px;
   border-radius: 50%;
-  background: #ffffff;
+  background: var(--slider-thumb-bg);
   border: 3px solid #00c6fb;
   box-shadow: 0 2px 8px rgba(0, 198, 251, 0.3);
   cursor: pointer;

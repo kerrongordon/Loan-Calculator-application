@@ -316,7 +316,7 @@ watch([formValues, loans], ([newFormVals, newLoans]) => {
 <template>
   <div class="space-y-8">
     <!-- Main Consolidation Card -->
-    <div class="bg-white rounded-2xl shadow-card overflow-hidden">
+    <div class="bg-card rounded-2xl shadow-card overflow-hidden">
       <div class="grid grid-cols-1 lg:grid-cols-2">
 
         <!-- LEFT: Form Inputs -->
@@ -441,7 +441,7 @@ watch([formValues, loans], ([newFormVals, newLoans]) => {
               <Button 
                 type="button" 
                 variant="outline" 
-                class="h-11 rounded-xl text-xs font-semibold bg-white border-border text-muted-foreground hover:bg-muted transition-all px-4"
+                class="h-11 rounded-xl text-xs font-semibold bg-card border-border text-muted-foreground hover:bg-muted transition-all px-4"
                 @click="copy()"
               >
                 {{ copied ? '✓ Copied' : 'Share' }}
@@ -451,7 +451,7 @@ watch([formValues, loans], ([newFormVals, newLoans]) => {
         </div>
 
         <!-- RIGHT: Live Preview -->
-        <div class="p-8 sm:p-10 flex flex-col items-center justify-center min-h-[480px] bg-white" v-if="liveResult" id="consolidation-live-preview">
+        <div class="p-8 sm:p-10 flex flex-col items-center justify-center min-h-[480px] bg-card" v-if="liveResult" id="consolidation-live-preview">
           <div class="self-end mb-4" data-html2canvas-ignore="true">
             <button 
               type="button"
@@ -519,7 +519,7 @@ watch([formValues, loans], ([newFormVals, newLoans]) => {
     </div>
 
     <!-- Amortization -->
-    <div v-if="liveResult" class="bg-white rounded-2xl shadow-card overflow-hidden p-8 sm:p-10">
+    <div v-if="liveResult" class="bg-card rounded-2xl shadow-card overflow-hidden p-8 sm:p-10">
       <div class="flex items-center gap-2 mb-6">
         <h3 class="text-lg font-bold text-foreground">Amortization Schedule</h3>
         <Tooltip text="A complete table showing how the new consolidated loan balance will decrease over the chosen term." />
@@ -533,7 +533,7 @@ watch([formValues, loans], ([newFormVals, newLoans]) => {
     </div>
 
     <!-- History -->
-    <div class="bg-white rounded-2xl shadow-card overflow-hidden">
+    <div class="bg-card rounded-2xl shadow-card overflow-hidden">
       <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between p-6 sm:p-8 border-b border-border">
         <h2 class="text-lg font-bold text-foreground">Consolidation History</h2>
         <button type="button" class="text-xs font-semibold text-red-400 hover:text-red-500 transition-colors disabled:opacity-40 mt-4 sm:mt-0" :disabled="!hasHistory" @click="deleteAllHistory">
@@ -548,7 +548,7 @@ watch([formValues, loans], ([newFormVals, newLoans]) => {
           <details
             v-for="item in history"
             :key="item.id"
-            class="group overflow-hidden rounded-xl border border-border bg-white transition-all hover:shadow-card-hover"
+            class="group overflow-hidden rounded-xl border border-border bg-card transition-all hover:shadow-card-hover"
           >
             <summary class="cursor-pointer list-none p-5 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/50">
               <div class="flex flex-wrap items-center justify-between gap-4">

@@ -157,7 +157,7 @@ const formatCompact = (n: number): string => {
           :y1="label.y"
           :x2="viewBoxWidth - padding.right"
           :y2="label.y"
-          stroke="rgba(0,0,0,0.06)"
+          stroke="var(--chart-grid)"
           stroke-dasharray="4"
         />
 
