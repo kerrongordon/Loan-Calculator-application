@@ -322,7 +322,7 @@ watch(formValues, (newVals) => {
               :validators="{ onBlur: ({ value }) => validateNumber(termRule, value) }"
             >
               <template #default="{ field }">
-                <div class="py-6 border-b border-border/60">
+                <div class="py-6 border-b border-border/80">
                   <div class="flex items-center justify-between mb-4">
                     <label class="text-sm font-semibold text-muted-foreground" :for="field.name">Loan tenure</label>
                     <div class="flex items-center gap-1 border-b border-muted-foreground/30 focus-within:border-primary transition-colors pb-0.5">
